@@ -1,0 +1,7 @@
+{
+  "name": "dashboarda",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ]
+}
