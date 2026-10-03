@@ -1,0 +1,13 @@
+{
+  "name": "@dashboarda/jeep-watch",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo static dashboard"
+  },
+  "dependencies": {
+    "@netlify/blobs": "latest",
+    "@netlify/functions": "latest"
+  }
+}
