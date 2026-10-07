@@ -1,40 +1,49 @@
-# Dashboarda MCP — Slice 1A
+# Dashboarda MCP — Slice 1B
 
-Exactly one tool: `dashboard_ping`. It returns `{ "ok": true, "authenticated": true }` after RS256 signature, issuer, audience, expiration, user-subject, and `dashboard:read` checks. No dashboard API or Blob access occurs.
+Exactly three tools, using the existing stateless Auth0-protected Streamable HTTP service:
 
-## Netlify deployment
+| Tool | Input | Required OAuth scope | Result |
+| --- | --- | --- | --- |
+| `dashboard_ping` | `{}` | `dashboard:read` | `{ ok: true, authenticated: true }` |
+| `dashboard_read` | `{ dashboard, limit?: integer }` | `dashboard:read` | `{ dashboard, total, runs, updatedAt, items }` |
+| `dashboard_upsert` | `{ dashboard, items: object[] }` | `dashboard:write` | `{ dashboard, received, total, runs, updatedAt }` |
 
-Create a **new** independently deployed site from `jtwray/dashboarda`, using branch `feature/mcp-auth-proof` for this proof. Do not change the six existing sites. Name the new site `dashboarda-mcp`; confirm that exact hostname is available before deployment. Do not substitute another hostname without revisiting the Auth0 resource configuration.
+Allowed dashboard IDs: `email-action`, `christian-jobs`, `local-prospects`, `job-rates`, `jeep-watch`. Inputs reject additional fields. Read defaults to 20 items, accepts 1–50, and never returns run history. Upsert accepts 1–50 objects and sends only `{ items }` to the existing API. It has no replace mode. Replays can increment observation/run counters: **never retry an uncertain write automatically**. Failures are sanitized and include `uncertain` where appropriate.
 
-| Setting | Value |
-| --- | --- |
-| Base directory | `apps/mcp` |
-| Build command | `npm run build` |
-| Publish directory | `apps/mcp/public` relative to repository / `public` relative to base |
-| Functions directory | `apps/mcp/netlify/functions` relative to repository / `netlify/functions` relative to base |
-| Node runtime | Node 22 or later |
+Read annotations: read-only, non-destructive, closed-world. Upsert annotations: not read-only, non-destructive, closed-world, not idempotent.
 
-`netlify.toml` defines base-relative settings. Netlify bundles the original `.mts` function with esbuild; `dist/mcp.mjs` is a local build check, not the publish directory.
+## Operator deployment
 
-Required Functions-scope environment variable **names**:
+Update only the existing **dashboarda-mcp** Netlify site. No authenticated tool is available to change its environment or Git deployment settings; no browser sign-in is needed for implementation/push.
 
-- `AUTH0_ISSUER`
-- `AUTH0_AUDIENCE`
+1. In each source dashboard site's environment settings, copy `DASHBOARD_READ_PIN` and `DASHBOARD_WRITE_TOKEN` into the corresponding MCP variables below. Do not change the source sites. Use the production values and give the new MCP variables Functions scope in the Production deploy context. Never paste credentials into GitHub, logs, or chat.
+2. Preserve MCP `AUTH0_ISSUER`, `AUTH0_AUDIENCE`, and `SECRETS_SCAN_OMIT_KEYS`. If Netlify's scan flags the copied credential values, append only the ten named credential keys below to the existing omit-key list; keep scanning enabled.
+3. In dashboarda-mcp → Project configuration → Build & deploy → Continuous deployment, set the production branch to `feature/mcp-dashboard-tools`. Confirm base `apps/mcp`, build `npm run build`, publish `public`, functions `netlify/functions`. `netlify.toml` supplies the base-relative settings. Do not merge to main.
+4. Deploys → Trigger deploy → Deploy site. Wait for Published/Ready; verify the deploy commit belongs to the new branch. A branch preview alone does not update the production endpoint.
 
-Use the exact owner-provided issuer with trailing slash and the existing Auth0 API Identifier as audience. No client secret, read PIN, write token, or OAuth proxy is required. Do not enable DCR or alter tenant settings.
+| MCP environment variable | Source Netlify site | Copy value from |
+| --- | --- | --- |
+| `EMAIL_ACTION_READ_PIN` | dashboarda-email-action | `DASHBOARD_READ_PIN` |
+| `EMAIL_ACTION_WRITE_TOKEN` | dashboarda-email-action | `DASHBOARD_WRITE_TOKEN` |
+| `CHRISTIAN_JOBS_READ_PIN` | dashboarda-christian-jobs | `DASHBOARD_READ_PIN` |
+| `CHRISTIAN_JOBS_WRITE_TOKEN` | dashboarda-christian-jobs | `DASHBOARD_WRITE_TOKEN` |
+| `LOCAL_PROSPECTS_READ_PIN` | dashboarda-local-prospects | `DASHBOARD_READ_PIN` |
+| `LOCAL_PROSPECTS_WRITE_TOKEN` | dashboarda-local-prospects | `DASHBOARD_WRITE_TOKEN` |
+| `JOB_RATES_READ_PIN` | dashboarda-job-rates | `DASHBOARD_READ_PIN` |
+| `JOB_RATES_WRITE_TOKEN` | dashboarda-job-rates | `DASHBOARD_WRITE_TOKEN` |
+| `JEEP_WATCH_READ_PIN` | dashboarda-jeep-watch | `DASHBOARD_READ_PIN` |
+| `JEEP_WATCH_WRITE_TOKEN` | dashboarda-jeep-watch | `DASHBOARD_WRITE_TOKEN` |
 
-## URLs (intended; deployment not yet performed)
+URLs:
 
-- MCP: `https://dashboarda-mcp.netlify.app/mcp`
-- Protected resource: `https://dashboarda-mcp.netlify.app/.well-known/oauth-protected-resource`
-- Path-specific discovery alias: `https://dashboarda-mcp.netlify.app/.well-known/oauth-protected-resource/mcp`
-- Auth0 OAuth metadata: `https://dev-x4geda25l7tl8ip3.us.auth0.com/.well-known/oauth-authorization-server`
-- Auth0 OpenID metadata: `https://dev-x4geda25l7tl8ip3.us.auth0.com/.well-known/openid-configuration`
-- Auth0 signing keys: `https://dev-x4geda25l7tl8ip3.us.auth0.com/.well-known/jwks.json`
+- MCP: https://dashboarda-mcp.netlify.app/mcp
+- Protected resource: https://dashboarda-mcp.netlify.app/.well-known/oauth-protected-resource
+- Path-specific alias: https://dashboarda-mcp.netlify.app/.well-known/oauth-protected-resource/mcp
+- Auth0 OpenID discovery: https://dev-x4geda25l7tl8ip3.us.auth0.com/.well-known/openid-configuration
 
-The protected-resource `resource` is the existing site-origin API Identifier, **not** the `/mcp` endpoint path. Clients must request that exact resource in authorization and token exchange. Both metadata URLs serve the same resource document. Auth0 hosts authorization-server metadata, PKCE, registration, login, and token exchange; this app implements no authorization server.
+Resource/audience stays the site-origin Auth0 API Identifier. Issuer stays `https://dev-x4geda25l7tl8ip3.us.auth0.com/`. Initial protected-resource discovery advertises read; each tool advertises its own required scope, including write for step-up. Every request verifies RS256 signature, issuer/audience/expiry and user subject; M2M tokens are rejected. Authenticated GET `/mcp` returns 405. Tool calls remain SDK validated; explicit list metadata includes OAuth `securitySchemes` and `_meta`.
 
-## Validation
+## Local validation
 
 From repository root:
 
@@ -44,16 +53,17 @@ npm run build --workspace @dashboarda/mcp
 npm test --workspace @dashboarda/mcp
 ```
 
-Tests create ephemeral local signing keys and invoke the same handler without a network listener. There is no production validation bypass: Netlify's entrypoint never accepts test keys from HTTP requests.
+Build includes typecheck. Tests use ephemeral signing keys and mock downstream endpoints through the real request handler. No test keys/configuration can be selected by an HTTP caller. Logs contain only request ID, status and duration.
 
-After deployment, GET protected-resource metadata and verify the exact issuer, audience/resource, and `dashboard:read`. POST `/mcp` without authentication must return 401 plus `WWW-Authenticate` pointing at the metadata URL. A malformed Bearer token must return 401 `invalid_token`. JWKS infrastructure failures fail closed with 503. A valid token lacking `dashboard:read` must return 403 `insufficient_scope`.
+## Deployed acceptance (pending)
 
-For MCP POSTs, send `Content-Type: application/json` and `Accept: application/json, text/event-stream`. Initialize, list tools, and call `dashboard_ping` with `{}` using a real Auth0 user access token. Every MCP request requires authentication. GET `/mcp` with valid authentication returns 405 instead of opening persistent SSE. Request-local server/transport instances return finite JSON; no sessions or persistence are created.
+Slice 1A's real ChatGPT OAuth/CIMD ping is owner-proven. Slice 1B requires:
 
-Then use **ChatGPT → Plugins → + → Create custom MCP server**, enter the MCP URL, choose OAuth and CIMD, and complete Auth0 login. Confirm discovery of exactly `dashboard_ping`, call it, and record the actual permission options shown. Do not claim CIMD registration, OAuth exchange, or ChatGPT compatibility from local tests. If CIMD fails, stop and capture the error; do not fall back to DCR.
+1. Refresh/reload Dashboarda in ChatGPT; verify exactly three tools.
+2. Read Email Action and compare with its real browser dashboard.
+3. Call upsert with the current read-only token; confirm `dashboard:write` rejection.
+4. In Auth0's Dashboarda MCP API application-access settings, identify the **specific ChatGPT CIMD application/client associated with this connection**, allow `dashboard:write` for that app (retain read), and reconnect/re-authorize Dashboarda in ChatGPT if the existing token still has read only. Do not change the default access policy or grant write to all third-party applications. If the specific client cannot be identified, stop the write proof.
+5. Upsert one controlled Email Action record with a stable logical key matching the existing endpoint semantics. Read it back and verify the browser dashboard.
+6. Upsert that same logical record again: verify no duplicate, changed `seenCount` and `lastSeenAt`, incremented `runs`, and appended `runHistory`. History is intentionally absent from MCP responses; inspect it through the existing dashboard state API using operator authentication. Do not retry an ambiguous failure and do not write to all five dashboards.
 
-## Limits
-
-This authorizes users issued `dashboard:read` by the configured tenant; it does not add an owner allowlist or accounts. M2M subjects/grants are rejected. Auth0 tenant policy controls which users receive permissions. SDK 1.x does not emit the top-level `securitySchemes` extension itself, so the explicit tools/list handler publishes it alongside the compatibility `_meta` field. Tool execution remains SDK-managed and HTTP authorization is mandatory.
-
-Only request ID, status, and duration are logged. Tokens, claims, request bodies, and user identities are never logged or returned.
+Record actual deployed observations before marking Slice 1B complete. No scheduled-task integration or Slice 2 work is included.

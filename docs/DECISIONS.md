@@ -1,26 +1,11 @@
 # Decisions
 
-## Accepted
-
-- Split Slice 1 into Auth0/CIMD ping proof (1A) and conditional dashboard tools (1B). Preserve owner configuration: CIMD enabled, DCR disabled. No custom authorization server or anonymous MCP access.
-- SDK: maintained `@modelcontextprotocol/sdk` 1.32.1; Zod 4; `jose` 6.2.12. Use SDK WebStandardStreamableHTTPServerTransport with no session IDs and finite JSON. Create/close server and transport per request. GET MCP streaming is unsupported and returns 405 after authentication.
-- Auth0 verifies user login and issues tokens; server verifies RS256 signature from issuer-derived JWKS, exact issuer (including trailing slash), configured audience, required expiration/subject/issued-at, optional not-before, and exact `dashboard:read` scope. Reject M2M subjects/grants. Tenant policy controls permission issuance.
-- OAuth resource equals the existing Auth0 API Identifier (site origin). `/mcp` is its endpoint path. Do not change the audience to include `/mcp` or alter the tenant as an implicit workaround. Public root and path-specific resource metadata plus `WWW-Authenticate` identify Auth0 and read scope.
-- Only `AUTH0_ISSUER` and `AUTH0_AUDIENCE` configure this proof. Never accept authentication configuration or credentials in tool inputs. JWKS infrastructure failures fail closed; sensitive error text and tokens are suppressed.
-- Explicit tools/list metadata includes top-level OAuth `securitySchemes` and `_meta` compatibility field because SDK 1.x emits only the latter by default. The SDK handles tool invocation and input/output validation.
-- Existing dashboard HTTP APIs and Netlify Blobs remain authoritative and untouched. Later upserts must not retry ambiguous writes: repeated observations change counters.
-
-## Verified compatibility evidence
-
-Official documentation inspected 2026-10-07 UTC:
-
-- [OpenAI authentication](https://developers.openai.com/plugins/build/auth): protected-resource discovery, challenges, CIMD `none` / `private_key_jwt`, PKCE, resource-bound token enforcement, tool OAuth metadata.
-- [MCP authorization](https://modelcontextprotocol.io/specification/latest/basic/authorization): public protected-resource metadata, canonical resource identifiers (including origin-only), 401/403 challenges, issuer/audience validation.
-- [Auth0 MCP support](https://auth0.com/blog/auth0-auth-for-mcp-servers-generally-available/): CIMD and resource indicators.
-- [Netlify MCP deployment](https://www.netlify.com/knowledge-base/how-to-build-and-deploy-an-mcp-server-on-netlify/): Web-standard transport in stateless Netlify functions; avoid standalone GET SSE.
-
-Corrected tenant public discovery advertises CIMD, PKCE S256, and supported token endpoint methods. This does not prove actual client registration, token resource mapping, or ChatGPT connection.
-
-## Unresolved
-
-- Deployed Netlify behavior and exact site availability; actual ChatGPT OAuth/CIMD registration/token exchange; future unattended tool approval permissions. Resolve through deployed evidence, not inference. Do not begin future slices.
+- Slice 1A is owner-proven in production; Slice 1B remains gated on deployed acceptance. Auth0/CIMD stays in place, DCR stays disabled, and no custom authorization server is introduced.
+- Preserve stateless finite Streamable HTTP on Netlify: SDK 1.32.1, Zod 4, jose 6.2.12, request-local server/transport, no session IDs or persistent GET SSE. Retain RS256, exact issuer/audience, expiry, user-subject, and M2M rejection checks.
+- Expose exactly ping/read/upsert. Ping/read require `dashboard:read`; upsert requires `dashboard:write`. Check actual invocation scope before forwarding and again inside callbacks. HTTP 403 and OAuth tool metadata identify missing scope. Resource metadata advertises the initial read scope; write is explicitly advertised on the upsert tool for step-up authorization. Grant write only to the specific ChatGPT CIMD app.
+- Resource remains the existing Auth0 API Identifier (site origin), with root/path-specific protected-resource metadata. Preserve exact issuer trailing slash. Publish top-level OAuth `securitySchemes` plus compatibility `_meta`.
+- Hardcode five existing dashboard endpoint URLs and credential prefixes. Reject unknown dashboard IDs and extra input fields. No caller routing, credentials, replace mode, home-board, or config database.
+- Read forwards server-side PIN authentication, returns at most 50 items and compact counts/timestamp, and omits history. Upsert forwards server-side Bearer authentication and only `{ items }`, returning a compact receipt. Existing APIs and Blobs remain authoritative and unchanged.
+- Upserts are not replay-idempotent: repeated observations affect `seenCount`, `lastSeenAt`, `runs`, and `runHistory`. Never automatically retry uncertain writes. Timeouts/network errors, malformed successful responses, and non-auth HTTP failures conservatively report write uncertainty; downstream authentication failures are reported as rejected. Suppress downstream bodies and private errors.
+- Log only request ID/status/duration; never log OAuth claims, tokens, dashboard credentials, or request bodies. Store all downstream credentials in Functions environment variables on the MCP site.
+- The connected Netlify tool supports inspection but not Git deployment/environment updates. Operator deploys the new branch on the existing MCP site only. No changes to the six dashboard sites and no merge to main.

@@ -6,7 +6,7 @@ export default async (request: Request, context: Context) => {
   let response: Response;
   try {
     const config = readConfig(name => Netlify.env.get(name));
-    response = await handleRequest(request, config);
+    response = await handleRequest(request, config, undefined, { env: name => Netlify.env.get(name), fetch: globalThis.fetch });
   } catch {
     response = Response.json({ error: 'server_configuration_unavailable' }, { status: 503 });
   }
