@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const DASHBOARDS = ['email-action', 'christian-jobs', 'local-prospects', 'job-rates', 'jeep-watch'] as const;
 export const readInput = z.object({ dashboard: z.enum(DASHBOARDS), limit: z.number().int().min(1).max(50).default(20) }).strict();
-export const upsertInput = z.object({ dashboard: z.enum(DASHBOARDS), items: z.array(z.record(z.string(), z.unknown())).min(1).max(50) }).strict();
+export const upsertInput = z.object({ dashboard: z.enum(DASHBOARDS), items: z.array(z.record(z.string(), z.unknown())).min(0).max(50) }).strict();
 export type Dashboard = typeof DASHBOARDS[number];
 export const ROUTES: Record<Dashboard, { url: string; prefix: string }> = {
   'email-action': { url: 'https://dashboarda-email-action.netlify.app/api/state', prefix: 'EMAIL_ACTION' },

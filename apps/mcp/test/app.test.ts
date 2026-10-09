@@ -140,7 +140,7 @@ test('invalid dashboard, limits, items, replace, URL and credentials cannot reac
     ['dashboard_read',{dashboard:'home-board'}],['dashboard_read',{dashboard:'https://evil.example'}],
     ['dashboard_read',{dashboard:'email-action',limit:51}],['dashboard_read',{dashboard:'email-action',limit:0}],
     ['dashboard_read',{dashboard:'email-action',limit:2.5}],['dashboard_read',{dashboard:'email-action',url:'https://evil.example'}],
-    ['dashboard_upsert',{dashboard:'unknown',items:[{}]}],['dashboard_upsert',{dashboard:'email-action',items:[]}],
+    ['dashboard_upsert',{dashboard:'unknown',items:[{}]}],
     ['dashboard_upsert',{dashboard:'email-action',items:Array(51).fill({})}],['dashboard_upsert',{dashboard:'email-action',items:[null]}],
     ['dashboard_upsert',{dashboard:'email-action',items:[[]]}],['dashboard_upsert',{dashboard:'email-action',items:['x']}],
     ['dashboard_upsert',{dashboard:'email-action',items:[{}],mode:'replace'}],['dashboard_upsert',{dashboard:'email-action',items:[{}],token:'override'}],
@@ -198,4 +198,43 @@ test('batch input cannot bypass scope checks or forward a write', async () => {
   }), config, key, io);
   assert.equal(response.status, 400);
   assert.equal(requests.length, 0);
+});
+test('zero-item sync posts exactly once and returns downstream run advancement without changing total', async () => {
+  for (const dashboard of DASHBOARDS) {
+    const {io, requests} = downstream(async () => Response.json({...sample, runs:sample.runs+1, updatedAt:'2026-10-09T18:00:00Z'}));
+    const {body} = await tool('dashboard_upsert', {dashboard, items:[]}, 'dashboard:write', io);
+    assert.deepEqual(body.result.structuredContent, {dashboard, received:0, total:sample.items.length, runs:sample.runs+1, updatedAt:'2026-10-09T18:00:00Z'});
+    assert.equal(requests.length, 1);
+    assert.equal(requests[0].init.method, 'POST');
+    assert.deepEqual(JSON.parse(requests[0].init.body as string), {items:[]});
+  }
+});
+test('one and fifty items remain accepted; discovery publishes minimum zero and maximum fifty', async () => {
+  for (const count of [1, 50]) {
+    const {io, requests} = downstream();
+    const {body} = await tool('dashboard_upsert', {dashboard:'email-action', items:Array.from({length:count}, (_,i)=>({id:String(i)}))}, 'dashboard:write', io);
+    assert.equal(body.result.structuredContent.received, count);
+    assert.equal(requests.length, 1);
+  }
+  const {result} = await (await call(await token())).json();
+  const w = result.tools.find((t:{name:string})=>t.name==='dashboard_upsert');
+  assert.equal(w.inputSchema.properties.items.minItems, 0);
+  assert.equal(w.inputSchema.properties.items.maxItems, 50);
+  assert.match(w.description, /zero-result sync/);
+});
+test('empty writes still require write scope and ambiguous failures are never retried', async () => {
+  const denied = downstream();
+  assert.equal((await tool('dashboard_upsert', {dashboard:'email-action', items:[]}, 'dashboard:read', denied.io)).r.status, 403);
+  assert.equal(denied.requests.length, 0);
+  for (const failure of ['network', 'server', 'malformed']) {
+    const {io, requests} = downstream(async () => {
+      if (failure==='network') throw new Error('private detail');
+      return new Response('private detail', {status:failure==='server'?500:200});
+    });
+    const {body} = await tool('dashboard_upsert', {dashboard:'email-action', items:[]}, 'dashboard:write', io);
+    assert.equal(body.result.isError, true);
+    assert.equal(JSON.parse(body.result.content[0].text).uncertain, true);
+    assert.equal(requests.length, 1);
+    assert.ok(!JSON.stringify(body).includes('private detail'));
+  }
 });

@@ -19,3 +19,11 @@
 - Preserve identity before enrichment. Incoming `_key` does not override endpoint keys; changing higher-precedence identity fields or fallback contents can duplicate records. Slice 4B snapshots full state, reviews a source-grounded manifest, holds unsafe identity matches, pilots safe upserts, and reconciles uncertain writes without automatic retries.
 - Product hierarchy: **DO NEXT → ranked actionable queue; NOTICE → one dashboard-specific visualization; EXPLORE → full searchable/filterable dataset**. Define ordering/missing-data behavior now; shared layout waits for 4C and individual decision UIs for 4D–4H.
 - Track Slice 3 natural-run verification separately from imports. Slice 4A changes only DATA_CONTRACT, ROADMAP, STATE, and DECISIONS on `feature/dashboard-data-contract` from proven `feature/mcp-dashboard-tools`. No backfill, stored-record edits, task-prompt edits, ranking/chart UI, database, API/MCP changes, merge, or manual deployment.
+
+## Slice 3B — scheduled-run observability
+
+- Every scheduled Dashboarda task must attempt exactly one `dashboard_upsert` per run. If qualifying items exist, send them in one batch; if none exist, send `items: []`. Retain task-specific filtering and notification behavior.
+- A zero-item upsert is a successful synchronization event: advance run metadata/history without creating records or changing existing item observations. Existing five `/api/state` handlers already implement this; MCP accepts 0–50 objects rather than blocking empty arrays.
+- Never retry an uncertain write, including an empty one. Upserts remain non-idempotent; the one-call rule is an orchestration requirement, not an exactly-once delivery guarantee. Failed/skipped writes remain unproven syncs.
+- Keep exactly ping/read/upsert, fixed five-dashboard routes, OAuth scope separation, downstream credentials, existing persistence, and bounded reads. No new run/log tool, queue, database, backfill, scoring or UI work.
+- Operator amends prompts and deploys the branch; code does not alter automations and this slice performs no manual deployment. Require natural production receipt evidence before marking verification complete or proceeding to 4B. All valid 4A data-contract decisions above remain in force.

@@ -93,7 +93,7 @@ export function makeServer(io: Downstream, scopes: string[]) {
     catch (error) { return failure(error); }
   });
   const writeDescriptor = {
-    title: 'Upsert Dashboarda items', description: 'Observe 1–50 items in a private task dashboard using existing upsert behavior. Replays increment observation/run counters; do not retry uncertain writes.',
+    title: 'Upsert Dashboarda items', description: 'Sync 0–50 items in a private task dashboard using existing upsert behavior. An empty items array records a successful zero-result sync: run metadata advances without creating records. Replays increment observation/run counters; do not retry uncertain writes.',
     inputSchema: upsertInput, outputSchema: resultSchema.extend({ received: z.number() }),
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
     _meta: { securitySchemes: [{ type: 'oauth2', scopes: [WRITE_SCOPE] }] },

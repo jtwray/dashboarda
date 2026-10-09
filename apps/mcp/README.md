@@ -8,7 +8,7 @@ Exactly three tools, using the existing stateless Auth0-protected Streamable HTT
 | `dashboard_read` | `{ dashboard, limit?: integer }` | `dashboard:read` | `{ dashboard, total, runs, updatedAt, items }` |
 | `dashboard_upsert` | `{ dashboard, items: object[] }` | `dashboard:write` | `{ dashboard, received, total, runs, updatedAt }` |
 
-Allowed dashboard IDs: `email-action`, `christian-jobs`, `local-prospects`, `job-rates`, `jeep-watch`. Inputs reject additional fields. Read defaults to 20 items, accepts 1–50, and never returns run history. Upsert accepts 1–50 objects and sends only `{ items }` to the existing API. It has no replace mode. Replays can increment observation/run counters: **never retry an uncertain write automatically**. Failures are sanitized and include `uncertain` where appropriate.
+Allowed dashboard IDs: `email-action`, `christian-jobs`, `local-prospects`, `job-rates`, `jeep-watch`. Inputs reject additional fields. Read defaults to 20 items, accepts 1–50, and never returns run history. Upsert accepts 0–50 objects and sends only `{ items }` to the existing API. An empty array records a successful zero-result sync, advancing run metadata without creating records. It has no replace mode. Replays can increment observation/run counters: **never retry an uncertain write automatically**. Failures are sanitized and include `uncertain` where appropriate.
 
 Read annotations: read-only, non-destructive, closed-world. Upsert annotations: not read-only, non-destructive, closed-world, not idempotent.
 
@@ -67,3 +67,15 @@ Slice 1A's real ChatGPT OAuth/CIMD ping is owner-proven. Slice 1B requires:
 6. Upsert that same logical record again: verify no duplicate, changed `seenCount` and `lastSeenAt`, incremented `runs`, and appended `runHistory`. History is intentionally absent from MCP responses; inspect it through the existing dashboard state API using operator authentication. Do not retry an ambiguous failure and do not write to all five dashboards.
 
 Record actual deployed observations before marking Slice 1B complete. No scheduled-task integration or Slice 2 work is included.
+
+## Slice 3B — scheduled-run observability
+
+Current remediation: allow empty-array upserts. Slice 3B deployment and natural-run acceptance are pending; the earlier Slice 1B acceptance checklist above is historical (owner confirms 1A/1B/2 complete).
+
+Operator order: amend all five existing scheduled prompts, deploy `fix/scheduled-dashboard-sync` on the existing MCP site, reload its tool metadata in ChatGPT, then observe natural production runs. Preserve existing environment variables and build settings. No automation edits or manual deployment were performed by this slice.
+
+Exact prompt amendment (retain task-specific filtering and notifications):
+
+> Always call Dashboarda dashboard_upsert exactly once per scheduled run. When qualifying items exist, send them in one batch. When none exist, call dashboard_upsert with items: []. Never retry an uncertain write.
+
+Compare persisted state before/after a natural run: `runs` advances, `updatedAt` changes, and `runHistory` gains a receipt. For zero results, receipt `received` is 0 and existing items remain unchanged. Use operator-authenticated existing `/api/state` GET for history (MCP deliberately omits it). Task execution alone is not sync proof; preserve failures/uncertainty and never silently retry. No claim of exactly-once delivery is made by this prompt convention.
