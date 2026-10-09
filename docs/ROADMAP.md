@@ -11,7 +11,7 @@ Production path: scheduled ChatGPT tasks → authenticated Dashboarda MCP → `d
 | 3B | Scheduled-run observability — current | Accept 0–50 upsert items; update five prompts, deploy MCP, and verify natural successful writes including zero-result runs. Production verification pending. |
 | 4A | Data contract/scoring — preserved | Defined in [DATA_CONTRACT.md](DATA_CONTRACT.md): optional fields, evidence rules, v1 rubrics, deterministic ranking, and backfill safeguards. Exit: review and push the contract branch; no production data/UI/prompt changes. |
 | 4B | Curated historical backfill | After 3B verification and documentation reconciliation: review genuine sources and complete state snapshot, preserve identity, pilot a small approved batch, verify read-back/provenance. Imports do not satisfy Slice 3 natural-run verification. |
-| 4C | Shared DO NEXT / NOTICE / EXPLORE layout | Later: mobile-friendly shared structure, graceful handling of legacy/unscored items. |
+| 4C | Shared DO NEXT / NOTICE / EXPLORE layout | Later: first harden shared Refresh UX across all five dashboards (`cache: "no-store"`, visible refreshing/success/error feedback, and a client-side checked-at indicator), then build the mobile-friendly shared structure with graceful handling of legacy/unscored items. |
 | 4D | Email Action decision UI | Later: actionable priority/deadline queue and one email visualization. |
 | 4E | Local Prospects decision UI | Later: evidence-based contact queue and one workflow visualization. |
 | 4F | Job Rates decision UI | Later: fit/rate queue and one disclosed hourly-rate visualization. |
@@ -25,6 +25,8 @@ Product hierarchy:
 2. **NOTICE** — one dashboard-specific visualization.
 3. **EXPLORE** — full searchable/filterable dataset.
 
+Dogfooding finding to preserve for 4C: the current Refresh buttons are wired and do re-fetch `/api/state`, but unchanged state gives the user almost no evidence that a refresh occurred. Treat this as a UX/observability issue, not a dead-button defect. The shared fix should explicitly bypass browser caching and show in-progress, success/failure, and “checked at” feedback without conflating client refresh time with server `updatedAt` / Last sync.
+
 Slice 4A branch: `feature/dashboard-data-contract`, based on proven `feature/mcp-dashboard-tools`. Do not merge to main. Preserve existing item fields, APIs, MCP behavior, Blobs semantics, and five-dashboard allowlist; home-board stays outside this task pipeline. No backfill, scheduled-task prompt edits, UI, charts, database, or generic scoring infrastructure in 4A.
 
 ## Immediate execution order
@@ -35,6 +37,6 @@ Slice 4A branch: `feature/dashboard-data-contract`, based on proven `feature/mcp
 4. Verify natural production runs, including zero-result receipts; do not mark verification complete from task execution alone.
 5. Documentation reconciliation against those observed receipts.
 6. Slice 4B curated historical backfill, retaining all 4A review/identity/provenance safeguards.
-7. DO NEXT / NOTICE / EXPLORE UI work (4C–4H above).
+7. DO NEXT / NOTICE / EXPLORE UI work (4C–4H above), beginning 4C with the shared Refresh UX hardening noted above.
 
 Slice 3B does not perform automation edits, manual deployment, backfill, historical-data edits, scoring changes, charts, UI, new persistence/tools, or merge to main.
