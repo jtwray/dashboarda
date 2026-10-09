@@ -1,9 +1,27 @@
 # Roadmap
 
-1. **Slice 1A — complete.** Owner proved the production ChatGPT Auth0 OAuth/CIMD connection and authenticated `dashboard_ping`.
-2. **Slice 1B — current.** Keep ping; add only fixed-route `dashboard_read` and `dashboard_upsert` for five task dashboards, preserving their APIs and persistence. Local implementation is tested; operator deployment and live acceptance remain pending. Exit: three tools in ChatGPT, real Email Action read, read-only write rejection, app-specific write authorization, controlled upsert/read-back/browser confirmation, and observed repeated-upsert semantics.
-3. **Slice 2 — after Slice 1B acceptance.** Prove one existing Email Monitor scheduled ChatGPT task can write unattended. Interactive success does not establish this.
-4. **Slice 3 — after Slice 2.** Connect remaining four scheduled tasks through the proven path.
-5. **Slice 4 — later.** Mobile/UI and operator polish.
+Production path: scheduled ChatGPT tasks → authenticated Dashboarda MCP → `dashboard_upsert` / `dashboard_read` → existing `/api/state` → Netlify Blobs → web dashboards.
 
-Do not begin Slice 2 or introduce new persistence, extra tools, home-board support, or scheduled-task integration in Slice 1B.
+| Slice | Scope | Status / exit condition |
+| --- | --- | --- |
+| 1A | Auth proof | Complete: production ChatGPT Auth0 OAuth/CIMD and authenticated `dashboard_ping` proven. |
+| 1B | MCP read/write | Complete: exactly ping/read/upsert, fixed five-dashboard routing, server-side credentials, and existing persistence. |
+| 2 | Email scheduled-write proof | Complete: unattended Email Monitor write through the authenticated production path proven. |
+| 3 | Remaining task wiring | Implemented: all five tasks wired. Natural-run verification pending for christian-jobs, local-prospects, job-rates, and jeep-watch; record each genuine scheduled write/read-back before calling the slice verified. |
+| 4A | Data contract/scoring — current | Defined in [DATA_CONTRACT.md](DATA_CONTRACT.md): optional fields, evidence rules, v1 rubrics, deterministic ranking, and backfill safeguards. Exit: review and push the contract branch; no production data/UI/prompt changes. |
+| 4B | Curated historical backfill | Next: review genuine sources and complete state snapshot, preserve identity, pilot a small approved batch, verify read-back/provenance. Imports do not satisfy Slice 3 natural-run verification. |
+| 4C | Shared DO NEXT / NOTICE / EXPLORE layout | Later: mobile-friendly shared structure, graceful handling of legacy/unscored items. |
+| 4D | Email Action decision UI | Later: actionable priority/deadline queue and one email visualization. |
+| 4E | Local Prospects decision UI | Later: evidence-based contact queue and one workflow visualization. |
+| 4F | Job Rates decision UI | Later: fit/rate queue and one disclosed hourly-rate visualization. |
+| 4G | Christian Jobs decision UI | Later: eligible fit-ranked queue and one fit visualization. |
+| 4H | Jeep Watch decision UI | Later: cautious listing/verification queue and one price/distance visualization. |
+| 5 | Dogfood/refine/stabilize | Later: verify usefulness/data quality during real runs, refine based on evidence, stabilize. |
+
+Product hierarchy:
+
+1. **DO NEXT** — ranked actionable queue.
+2. **NOTICE** — one dashboard-specific visualization.
+3. **EXPLORE** — full searchable/filterable dataset.
+
+Slice 4A branch: `feature/dashboard-data-contract`, based on proven `feature/mcp-dashboard-tools`. Do not merge to main. Preserve existing item fields, APIs, MCP behavior, Blobs semantics, and five-dashboard allowlist; home-board stays outside this task pipeline. No backfill, scheduled-task prompt edits, UI, charts, database, or generic scoring infrastructure in 4A.
