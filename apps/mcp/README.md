@@ -1,4 +1,4 @@
-# Dashboarda MCP — Slice 1B
+# Dashboarda MCP — production reference (Slices 1A–3B)
 
 Exactly three tools, using the existing stateless Auth0-protected Streamable HTTP service:
 
@@ -12,9 +12,9 @@ Allowed dashboard IDs: `email-action`, `christian-jobs`, `local-prospects`, `job
 
 Read annotations: read-only, non-destructive, closed-world. Upsert annotations: not read-only, non-destructive, closed-world, not idempotent.
 
-## Operator deployment
+## Original Slice 1B operator deployment reference (historical)
 
-Update only the existing **dashboarda-mcp** Netlify site. No authenticated tool is available to change its environment or Git deployment settings; no browser sign-in is needed for implementation/push.
+The production MCP is already deployed and 1A/1B/2/3B are proven. The following original setup steps are preserved as a configuration reference, **not outstanding deployment work**. Do not redeploy or change settings for documentation reconciliation.
 
 1. In each source dashboard site's environment settings, copy `DASHBOARD_READ_PIN` and `DASHBOARD_WRITE_TOKEN` into the corresponding MCP variables below. Do not change the source sites. Use the production values and give the new MCP variables Functions scope in the Production deploy context. Never paste credentials into GitHub, logs, or chat.
 2. Preserve MCP `AUTH0_ISSUER`, `AUTH0_AUDIENCE`, and `SECRETS_SCAN_OMIT_KEYS`. If Netlify's scan flags the copied credential values, append only the ten named credential keys below to the existing omit-key list; keep scanning enabled.
@@ -55,9 +55,9 @@ npm test --workspace @dashboarda/mcp
 
 Build includes typecheck. Tests use ephemeral signing keys and mock downstream endpoints through the real request handler. No test keys/configuration can be selected by an HTTP caller. Logs contain only request ID, status and duration.
 
-## Deployed acceptance (pending)
+## Original Slice 1B deployed acceptance checklist (completed)
 
-Slice 1A's real ChatGPT OAuth/CIMD ping is owner-proven. Slice 1B requires:
+Slice 1A Auth0/CIMD ping and Slice 1B read/write acceptance are owner-confirmed production-proven. The historical checklist was:
 
 1. Refresh/reload Dashboarda in ChatGPT; verify exactly three tools.
 2. Read Email Action and compare with its real browser dashboard.
@@ -66,15 +66,13 @@ Slice 1A's real ChatGPT OAuth/CIMD ping is owner-proven. Slice 1B requires:
 5. Upsert one controlled Email Action record with a stable logical key matching the existing endpoint semantics. Read it back and verify the browser dashboard.
 6. Upsert that same logical record again: verify no duplicate, changed `seenCount` and `lastSeenAt`, incremented `runs`, and appended `runHistory`. History is intentionally absent from MCP responses; inspect it through the existing dashboard state API using operator authentication. Do not retry an ambiguous failure and do not write to all five dashboards.
 
-Record actual deployed observations before marking Slice 1B complete. No scheduled-task integration or Slice 2 work is included.
+Original Slice 1B acceptance is complete. These steps are retained for audit/reference, not as pending work.
 
-## Slice 3B — scheduled-run observability
+## Slice 3B — zero-result scheduled sync (production-proven)
 
-Current remediation: allow empty-array upserts. Slice 3B deployment and natural-run acceptance are pending; the earlier Slice 1B acceptance checklist above is historical (owner confirms 1A/1B/2 complete).
+The deployed MCP accepts `items: []`. On 2026-10-10, natural production state evidence confirmed zero-result syncs for Email Action, Christian Jobs, and Jeep Watch. Local Prospects and Job Rates natural receipts remain **pending**; this does not block curated 4B backfill. All five scheduled prompts have been amended; no further 3B prompt or deployment step is pending.
 
-Operator order: amend all five existing scheduled prompts, deploy `fix/scheduled-dashboard-sync` on the existing MCP site, reload its tool metadata in ChatGPT, then observe natural production runs. Preserve existing environment variables and build settings. No automation edits or manual deployment were performed by this slice.
-
-Exact prompt amendment (retain task-specific filtering and notifications):
+Durable prompt rule (retain task-specific filtering and notifications):
 
 > Always call Dashboarda dashboard_upsert exactly once per scheduled run. When qualifying items exist, send them in one batch. When none exist, call dashboard_upsert with items: []. Never retry an uncertain write.
 

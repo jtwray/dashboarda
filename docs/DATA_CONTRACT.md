@@ -175,7 +175,7 @@ History separates source `postedAt`, genuine `originallyObservedAt`, and persist
 
 ## Slice 4B backfill (proposed; no writes in 4A)
 
-1. Track four non-email natural-run checks separately; imports are not scheduled-run proof. Curate a small set from genuine prior reports/source records, excluding test artifacts and known expired/non-actionable opportunities from DO NEXT.
+1. Track pending Local Prospects and Job Rates natural-run checks separately; imports are not scheduled-run proof. Curate a small set from genuine prior reports/source records, excluding test artifacts and known expired/non-actionable opportunities from DO NEXT.
 2. Snapshot complete current state. MCP read defaults to 20/caps at 50, with no pagination/history; compare `total` to returned count. If truncated or history/counters are needed, use existing authenticated `/api/state` GET, not repeated identical MCP reads or a new tool.
 3. Review a manifest: source/citation, identity match, new/existing item, explicit next action, normalization evidence, rubric component points/total/version, backfill provenance. Preserve source text/uncertainty; never invent timestamps, money, distances, deadlines, or contacts.
 4. Match key precedence exactly: `id` → `messageId` → `url` → `business|location` → `employer|role|location` → `vehicle|location|price` → `from|subject|received` → stable full-object fallback. Preserve matched key-driving fields. Incoming `_key` is not an identity override; adding a higher-precedence ID or changing identity-bearing text can duplicate records.

@@ -1,6 +1,6 @@
 # Decisions
 
-- Slices 1A (auth), 1B (MCP read/write), and 2 (Email scheduled-write proof) are owner-confirmed complete in production. Slice 3 wiring is implemented for all five tasks; four non-email natural runs remain unverified. Auth0/CIMD stays in place, DCR stays disabled, and no custom authorization server is introduced.
+- Slices 1A (auth), 1B (MCP read/write), and 2 (unattended Email write) are production-proven. Slice 3 is implemented for all five tasks: Email Action, Christian Jobs, and Jeep Watch natural syncs are proven; Local Prospects and Job Rates remain pending. Slice 3B zero-result synchronization is deployed and production-proven; 4A contract/scoring is complete. Auth0/CIMD stays in place, DCR stays disabled, and no custom authorization server is introduced.
 - Preserve stateless finite Streamable HTTP on Netlify: SDK 1.32.1, Zod 4, jose 6.2.12, request-local server/transport, no session IDs or persistent GET SSE. Retain RS256, exact issuer/audience, expiry, user-subject, and M2M rejection checks.
 - Expose exactly ping/read/upsert. Ping/read require `dashboard:read`; upsert requires `dashboard:write`. Check actual invocation scope before forwarding and again inside callbacks. HTTP 403 and OAuth tool metadata identify missing scope. Resource metadata advertises the initial read scope; write is explicitly advertised on the upsert tool for step-up authorization. Grant write only to the specific ChatGPT CIMD app.
 - Resource remains the existing Auth0 API Identifier (site origin), with root/path-specific protected-resource metadata. Preserve exact issuer trailing slash. Publish top-level OAuth `securitySchemes` plus compatibility `_meta`.
@@ -18,7 +18,7 @@
 - Provenance stays additive: `backfilled` identifies genuine imports; `originallyObservedAt` requires a genuinely known original observation instant. `firstSeenAt` remains first observed by Dashboarda persistence. No fake history, counter resets, reconstructed past price/rate trends, or persistence redesign.
 - Preserve identity before enrichment. Incoming `_key` does not override endpoint keys; changing higher-precedence identity fields or fallback contents can duplicate records. Slice 4B snapshots full state, reviews a source-grounded manifest, holds unsafe identity matches, pilots safe upserts, and reconciles uncertain writes without automatic retries.
 - Product hierarchy: **DO NEXT → ranked actionable queue; NOTICE → one dashboard-specific visualization; EXPLORE → full searchable/filterable dataset**. Define ordering/missing-data behavior now; shared layout waits for 4C and individual decision UIs for 4D–4H.
-- Track Slice 3 natural-run verification separately from imports. Slice 4A changes only DATA_CONTRACT, ROADMAP, STATE, and DECISIONS on `feature/dashboard-data-contract` from proven `feature/mcp-dashboard-tools`. No backfill, stored-record edits, task-prompt edits, ranking/chart UI, database, API/MCP changes, merge, or manual deployment.
+- Track natural scheduled-run verification separately from imports. Slice 4A is completed documentation-only contract/scoring work; no backfill, stored-record edits, runtime scoring, producer prompt edits, ranking/chart UI, database, or API/MCP changes were part of 4A.
 
 ## Slice 3B — scheduled-run observability
 
@@ -26,4 +26,9 @@
 - A zero-item upsert is a successful synchronization event: advance run metadata/history without creating records or changing existing item observations. Existing five `/api/state` handlers already implement this; MCP accepts 0–50 objects rather than blocking empty arrays.
 - Never retry an uncertain write, including an empty one. Upserts remain non-idempotent; the one-call rule is an orchestration requirement, not an exactly-once delivery guarantee. Failed/skipped writes remain unproven syncs.
 - Keep exactly ping/read/upsert, fixed five-dashboard routes, OAuth scope separation, downstream credentials, existing persistence, and bounded reads. No new run/log tool, queue, database, backfill, scoring or UI work.
-- Operator amends prompts and deploys the branch; code does not alter automations and this slice performs no manual deployment. Require natural production receipt evidence before marking verification complete or proceeding to 4B. All valid 4A data-contract decisions above remain in force.
+- All five task prompts were amended, and the 3B MCP update was deployed and naturally production-proven on 2026-10-10. Local Prospects and Job Rates still await natural receipts; their verification may proceed on their regular schedules and does not block controlled 4B backfill. Historical imports cannot close those verification gates. All accepted 4A decisions remain in force.
+
+## Next slices — 4B and 4C
+
+- **4B next:** historical backfill must be curated, source-grounded, and reviewed against a complete state snapshot and an identity/provenance manifest. Pilot small approved batches and reconcile read-back before expanding. Never invent `firstSeenAt` or reconstruct unavailable historical trends; no automatic retry after an uncertain write.
+- **4C planned:** retain **DO NEXT / NOTICE / EXPLORE**. Existing Refresh buttons work but unchanged data obscures success. Shared UX should fetch `/api/state` using `cache: "no-store"`, show refreshing/success/failure, and show client **Checked at** separately from server **Last sync** / `updatedAt`. Do not implement during documentation reconciliation or 4B.

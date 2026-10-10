@@ -2,41 +2,31 @@
 
 Production path: scheduled ChatGPT tasks → authenticated Dashboarda MCP → `dashboard_upsert` / `dashboard_read` → existing `/api/state` → Netlify Blobs → web dashboards.
 
-| Slice | Scope | Status / exit condition |
+| Slice | Scope | Current status / gate |
 | --- | --- | --- |
-| 1A | Auth proof | Complete: production ChatGPT Auth0 OAuth/CIMD and authenticated `dashboard_ping` proven. |
-| 1B | MCP read/write | Complete: exactly ping/read/upsert, fixed five-dashboard routing, server-side credentials, and existing persistence. |
-| 2 | Email scheduled-write proof | Complete: unattended Email Monitor write through the authenticated production path proven. |
-| 3 | Remaining task wiring | Implemented: all five tasks wired. Natural-run verification pending for christian-jobs, local-prospects, job-rates, and jeep-watch; record each genuine scheduled write/read-back before calling the slice verified. |
-| 3B | Scheduled-run observability — current | Accept 0–50 upsert items; update five prompts, deploy MCP, and verify natural successful writes including zero-result runs. Production verification pending. |
-| 4A | Data contract/scoring — preserved | Defined in [DATA_CONTRACT.md](DATA_CONTRACT.md): optional fields, evidence rules, v1 rubrics, deterministic ranking, and backfill safeguards. Exit: review and push the contract branch; no production data/UI/prompt changes. |
-| 4B | Curated historical backfill | After 3B verification and documentation reconciliation: review genuine sources and complete state snapshot, preserve identity, pilot a small approved batch, verify read-back/provenance. Imports do not satisfy Slice 3 natural-run verification. |
-| 4C | Shared DO NEXT / NOTICE / EXPLORE layout | Later: first harden shared Refresh UX across all five dashboards (`cache: "no-store"`, visible refreshing/success/error feedback, and a client-side checked-at indicator), then build the mobile-friendly shared structure with graceful handling of legacy/unscored items. |
-| 4D | Email Action decision UI | Later: actionable priority/deadline queue and one email visualization. |
-| 4E | Local Prospects decision UI | Later: evidence-based contact queue and one workflow visualization. |
-| 4F | Job Rates decision UI | Later: fit/rate queue and one disclosed hourly-rate visualization. |
-| 4G | Christian Jobs decision UI | Later: eligible fit-ranked queue and one fit visualization. |
-| 4H | Jeep Watch decision UI | Later: cautious listing/verification queue and one price/distance visualization. |
-| 5 | Dogfood/refine/stabilize | Later: verify usefulness/data quality during real runs, refine based on evidence, stabilize. |
+| 1A | Auth proof | **Complete — production proven.** Auth0 OAuth/CIMD and authenticated ping. |
+| 1B | MCP read/write | **Complete — production proven.** Exactly three tools, five fixed routes, existing persistence. |
+| 2 | Email unattended scheduled write | **Complete — production proven.** |
+| 3 | Wire all five scheduled tasks | **Implemented.** Natural-run sync proven for Email Action, Christian Jobs, and Jeep Watch; **pending** for Local Prospects and Job Rates. |
+| 3B | Zero-result scheduled synchronization | **Complete — deployed and production proven.** Upsert accepts 0–50 items; all five prompts require one batched sync per run, including `items: []`. |
+| 4A | Optional data contract and v1 scoring | **Complete.** Accepted definitions in [DATA_CONTRACT.md](DATA_CONTRACT.md); no producer, API, storage, or UI changes. |
+| 4B | Curated historical backfill | **NEXT.** Source-grounded manifest, complete state snapshot, identity/provenance review, small controlled pilot, read-back reconciliation. No indiscriminate archive. |
+| 4C | Shared DO NEXT / NOTICE / EXPLORE + Refresh UX | **Planned.** Harden Refresh feedback and no-store fetching; build mobile-friendly hierarchy with legacy/unscored fallbacks. |
+| 4D–4H | Dashboard-specific decision queues and visualizations | **Planned.** Email Action, Local Prospects, Job Rates, Christian Jobs, Jeep Watch. |
+| 5 | Dogfood/refine/stabilize | **Planned.** Verify usefulness and data quality through real use. |
 
-Product hierarchy:
-
-1. **DO NEXT** — ranked actionable queue.
-2. **NOTICE** — one dashboard-specific visualization.
-3. **EXPLORE** — full searchable/filterable dataset.
-
-Dogfooding finding to preserve for 4C: the current Refresh buttons are wired and do re-fetch `/api/state`, but unchanged state gives the user almost no evidence that a refresh occurred. Treat this as a UX/observability issue, not a dead-button defect. The shared fix should explicitly bypass browser caching and show in-progress, success/failure, and “checked at” feedback without conflating client refresh time with server `updatedAt` / Last sync.
-
-Slice 4A branch: `feature/dashboard-data-contract`, based on proven `feature/mcp-dashboard-tools`. Do not merge to main. Preserve existing item fields, APIs, MCP behavior, Blobs semantics, and five-dashboard allowlist; home-board stays outside this task pipeline. No backfill, scheduled-task prompt edits, UI, charts, database, or generic scoring infrastructure in 4A.
+Planned UI hierarchy: **DO NEXT** (ranked actions) → **NOTICE** (one dashboard-specific visualization) → **EXPLORE** (full searchable/filterable data).
 
 ## Immediate execution order
 
-1. Slice 3B scheduled-run observability (`fix/scheduled-dashboard-sync`, from `feature/dashboard-data-contract` at `418dc0c`).
-2. Operator updates the five existing scheduled task prompts; retain task-specific filtering and notifications.
-3. Operator deploys the MCP change on the existing dashboarda-mcp site.
-4. Verify natural production runs, including zero-result receipts; do not mark verification complete from task execution alone.
-5. Documentation reconciliation against those observed receipts.
-6. Slice 4B curated historical backfill, retaining all 4A review/identity/provenance safeguards.
-7. DO NEXT / NOTICE / EXPLORE UI work (4C–4H above), beginning 4C with the shared Refresh UX hardening noted above.
+1. Reconcile production documentation (this task).
+2. Plan and execute **4B** curated backfill, subject to reviewed sources, full-state snapshot, identity safety, and pilot read-back.
+3. Implement **4C** shared structure and Refresh UX hardening.
+4. Implement dashboard-specific queues/visualizations (**4D–4H**).
+5. Dogfood, refine, and stabilize (**5**).
 
-Slice 3B does not perform automation edits, manual deployment, backfill, historical-data edits, scoring changes, charts, UI, new persistence/tools, or merge to main.
+Natural scheduled-run verification for Local Prospects and Job Rates can complete **in parallel** when their normal schedules run; pending verification is not a 4B blocker. Backfill imports **never count** as natural-run proof.
+
+4C Refresh finding: existing buttons do fetch state but give poor feedback when nothing changes. Use `fetch("/api/state", { cache: "no-store" })`, visible **Refreshing** state and success/failure feedback, plus a client-side **Checked at** timestamp. Keep Checked at distinct from server-side **Last sync** / `updatedAt`. **Do not implement in 4B.**
+
+Retain current architecture and accepted 4A contract; no new MCP tools, persistence redesign, retroactive observation timestamps, or merge to main.
