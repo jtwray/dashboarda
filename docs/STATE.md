@@ -14,7 +14,7 @@ Scheduled ChatGPT tasks → authenticated Dashboarda MCP → `dashboard_upsert` 
 - **3C:** audit completed 2026-10-11 with evidence limits. Empower/KFORCE real-email persistence was confirmed; recovered outputs report recruiter writes blocked by authorization/safety checks. Full underlying tool logs were unavailable, so not every root cause is proven.
 - **3D:** UI metric wording and outcome semantics implemented on `fix/scheduled-write-outcomes`; deployment not performed. The proposed all-task failure-notification amendment is documented in [DECISIONS.md](DECISIONS.md), **not applied**. No platform authorization/safety failure mechanism is marked fixed.
 - **4A:** **complete** — optional normalized fields, deterministic v1 scoring, evidence and provenance rules defined in [DATA_CONTRACT.md](DATA_CONTRACT.md). Backward-compatible, documentation-only contract; runtime and stored items unchanged.
-- **4B:** **next** — curated historical backfill, not yet performed.
+- **4B:** **Gate 1 manifest prepared; review pending** — [BACKFILL_MANIFEST.md](BACKFILL_MANIFEST.md). No production backfill performed. Specific candidate/payload approval remains required before Gate 2; 4B is not complete.
 - **4C onward:** planned — shared decision UI and Refresh UX, then dashboard-specific views.
 
 ## Natural production sync evidence — 2026-10-10
