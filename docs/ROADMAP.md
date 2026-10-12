@@ -9,7 +9,8 @@ Production path: scheduled ChatGPT tasks → authenticated Dashboarda MCP → `d
 | 2 | Email unattended scheduled write | **Complete — production proven.** |
 | 3 | Wire all five scheduled tasks | **Implemented.** Natural-run sync proven for Email Action, Christian Jobs, and Jeep Watch; **pending** for Local Prospects and Job Rates. |
 | 3B | Zero-result scheduled synchronization | **Complete — deployed and production proven.** Upsert accepts 0–50 items; all five prompts require one batched sync per run, including `items: []`. |
-| 3C | Email Monitor decision-path audit | **Planned — high priority.** Read-only audit of bounded scheduled run/chat logs and correlated source/persisted evidence. Classify intentional exclusion, successful write, failed write, zero-result sync, duplicate/repeat observation, skipped/uncertain sync, and reporting/UI discrepancies. Produce evidence-backed bug/process findings; no fixes or data mutations in the audit slice. |
+| 3C | Email Monitor decision-path audit | **Completed — 2026-10-11, with evidence limits.** Confirmed real-email persistence; recovered outputs report authorization/safety-blocked writes. Full tool logs were unavailable, so exact failure mechanisms remain partly unproven. |
+| 3D | Scheduled write outcomes and metric semantics | **Implemented; deployment pending.** Five dashboards label persisted updates as successful syncs. Failure-notification amendment proposed for all five tasks, not applied. Platform authorization/safety failures are not fixed by these labels. |
 | 4A | Optional data contract and v1 scoring | **Complete.** Accepted definitions in [DATA_CONTRACT.md](DATA_CONTRACT.md); no producer, API, storage, or UI changes. |
 | 4B | Curated historical backfill | **NEXT.** Source-grounded manifest, complete state snapshot, identity/provenance review, small controlled pilot, read-back reconciliation. No indiscriminate archive. |
 | 4C | Shared DO NEXT / NOTICE / EXPLORE + Refresh UX | **Planned.** Harden Refresh feedback and no-store fetching; build mobile-friendly hierarchy with legacy/unscored fallbacks. |
@@ -20,9 +21,9 @@ Planned UI hierarchy: **DO NEXT** (ranked actions) → **NOTICE** (one dashboard
 
 ## Immediate execution order
 
-1. Run **3C Email Monitor decision-path audit** as a small read-only reliability slice. It may run in parallel with 4B Gate 1 manifest preparation, but review 3C before any Email Action historical import is approved for Gate 2.
+1. Review the completed **3C audit** and **3D** outcome policy in [DECISIONS.md](DECISIONS.md). Apply the proposed task amendment only after review, separately from this development slice; review 3C before approving Email Action Gate 2 imports.
 2. Prepare **4B Gate 1** curated backfill manifest, subject to reviewed sources, full-state snapshot, identity safety, and explicit approval before writes.
-3. Convert any 3C findings that require changes into narrowly scoped follow-up work; do not mix fixes into the audit itself.
+3. Diagnose remaining blocked writes from bounded primary run/tool evidence. If needed later, scope execution/outcome telemetry separately; do not treat label corrections as an authorization fix or build a generalized telemetry system.
 4. Execute approved **4B Gate 2** backfill with bounded writes and read-back reconciliation.
 5. Implement **4C** shared structure and Refresh UX hardening.
 6. Implement dashboard-specific queues/visualizations (**4D–4H**).
@@ -30,7 +31,9 @@ Planned UI hierarchy: **DO NEXT** (ranked actions) → **NOTICE** (one dashboard
 
 Natural scheduled-run verification for Local Prospects and Job Rates can complete **in parallel** when their normal schedules run; pending verification is not a 3C or 4B Gate 1 blocker. Backfill imports **never count** as natural-run proof.
 
-4C Refresh finding: existing buttons do fetch state but give poor feedback when nothing changes. Use `fetch("/api/state", { cache: "no-store" })`, visible **Refreshing** state and success/failure feedback, plus a client-side **Checked at** timestamp. Keep Checked at distinct from server-side **Last sync** / `updatedAt`. **Do not implement in 4B.**
+4C Refresh finding: existing buttons do fetch state but give poor feedback when nothing changes. Use `fetch("/api/state", { cache: "no-store" })`, visible **Refreshing** state and success/failure feedback, plus a client-side **Checked at** timestamp. Keep Checked at distinct from server-side **Last successful sync** / `updatedAt`. **Do not implement in 3D or 4B.**
+
+**4B Gate 2:** successful import batches increment the same persistence counter, consistently with **Successful syncs**. No new persistence/schema blocker follows from 3D or from an unattended write being blocked. Approved imports still require a working authorized write path, a complete fresh state snapshot, safe identities, and read-back reconciliation. For Email Action, review the audit's failed-actionable candidates against source messages and current state before importing. Stop a blocked/rejected write; reconcile an uncertain outcome without automatic retry. Imports do not establish scheduled-run health.
 
 Retain current architecture and accepted 4A contract; no new MCP tools, persistence redesign, retroactive observation timestamps, or merge to main.
 
