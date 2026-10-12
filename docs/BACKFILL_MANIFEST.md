@@ -353,16 +353,16 @@ Relevance/uncertainty: Current form and weekly service verified; internal schedu
 }
 ```
 
-#### LP02 — Holland Fence Co. LLC
+#### LP02 — Holland Fence
 
 **Recommendation: APPROVE CANDIDATE. Target: local-prospects.**
-Expected key: `business:Holland Fence Co. LLC\|Axton, VA`.
+Expected key: `business:Holland Fence\|Axton, VA`.
 Sources: [official 1](https://hollandfencecompany.com/resources/instant-quote/); [official 2](https://hollandfencecompany.com/).
-Relevance/uncertainty: Prior name retained; public brand is Holland Fence. Existing estimator is mySalesman; API/export access and unmet need are unknown.
+Relevance/uncertainty: Current official public branding uses Holland Fence. Use that current brand in the persisted business+location identity to reduce future alias/duplicate risk. Existing estimator is mySalesman; API/export access and unmet need are unknown.
 
 ```json
 {
-  "business": "Holland Fence Co. LLC",
+  "business": "Holland Fence",
   "location": "Axton, VA",
   "workflow": "Online fence estimator collects address, fence layout and material choices; site consultation leads to a quote and installation.",
   "hypothesis": "Hypothesis: connect estimator leads to follow-up, site-visit scheduling and quote-status tracking.",
@@ -620,9 +620,9 @@ JR02's old syndicated URL would produce a different URL key despite substantial 
 
 ## 9. Proposed Gate 2 plan — future only
 
-**Tucker must explicitly approve IDs and their exact payloads.** Recommended initial approval set: **LP01, LP02, LP03, LP04, LP05, CJ01**. Approval of this document's preparation, branch or recommendation is not authorization to import all held/excluded records. Resolve held candidates and obtain separate per-ID approval before adding any of them.
+**Tucker has conceptually reviewed the six recommended candidates: LP01, LP02, LP03, LP04, LP05, and CJ01. Final production authorization still requires explicit approval of these corrected exact payloads before Gate 2 writes.** Approval of this document's preparation, branch, conceptual review, or recommendation is not authorization to import all held/excluded records. Resolve held candidates and obtain separate per-ID approval before adding any of them.
 
-1. Take a fresh complete snapshot of all five dashboards. Revalidate source relevance, exact keys and logical aliases; refresh the six payloads only through reviewed amendments.
+1. Prefer completing Local Prospects' pending natural-run verification before its historical five-record batch so the natural proof remains unambiguous. Immediately before any production write, take a fresh complete snapshot of all five dashboards. Revalidate source relevance, exact keys and logical aliases; refresh the six payloads only through reviewed amendments.
 2. If any approved item is already present under any identity, hold/skip it and revise expected counts before writing. Do not silently enrich or rewrite current natural items. No `items:[]` call is needed for a dashboard with no approved imports.
 3. Through the existing authorized MCP only, propose one conservative five-record Local Prospects pilot batch, then one single-record Christian Jobs batch. Both are within the 50-item limit. Do not work around a rejected/blocked action.
 4. After **each** batch, read complete state back and check expected totals, identities, no duplicates, preserved prior rows, `backfilled:true`, genuine import-time persistence metadata, absence of fabricated `originallyObservedAt`, and one additional Successful sync.
