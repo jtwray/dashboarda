@@ -1,1 +1,57 @@
-<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Local Software Prospects</title><style>:root{font-family:Inter,system-ui,sans-serif;color:#172033;background:#f6f7fb}*{box-sizing:border-box}body{margin:0}.shell{max-width:1180px;margin:auto;padding:28px 18px 60px}header{display:flex;justify-content:space-between;gap:16px}h1{margin:0 0 6px}p{margin:0;color:#657086}.pill,.status{border:1px solid #dde2ea;border-radius:999px;background:#fff;padding:6px 9px;font-size:.8rem}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.card{background:#fff;border:1px solid #e5e8ef;border-radius:14px}.stat{padding:15px}.stat b{display:block;font-size:1.45rem}.toolbar{display:flex;gap:10px;padding:12px}input,button{font:inherit;border:1px solid #dce1ea;border-radius:9px;padding:9px 11px;background:#fff}input{flex:1}table{width:100%;border-collapse:collapse}th,td{padding:11px 12px;border-top:1px solid #edf0f4;text-align:left;font-size:.9rem}th{font-size:.72rem;text-transform:uppercase;color:#7d8798}.table{overflow-x:auto}.empty{padding:40px;text-align:center;color:#7d8798}a{color:#2457d6}.muted,footer{color:#8a93a4;font-size:.78rem}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}th,td{white-space:nowrap}}</style></head><body><main class="shell"><header><div><h1>Local Software Prospects</h1><p>Fresh local businesses worth contacting for automation work</p></div><span class="pill">Weekdays</span></header><section class="stats"><div class="card stat"><span class="muted">Items</span><b id="count">0</b></div><div class="card stat"><span class="muted">New</span><b id="newCount">0</b></div><div class="card stat"><span class="muted">Successful syncs</span><b id="runs">0</b></div><div class="card stat"><span class="muted">Last successful sync</span><b id="updated">—</b></div></section><section class="card"><div class="toolbar"><input id="search" placeholder="Filter…"><button id="refresh">Refresh</button></div><div class="table"><table><thead><tr><th>Business</th><th>Location</th><th>Visible workflow</th><th>Automation idea</th><th>Ask for</th><th>Phone</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div><div id="empty" class="empty">No results yet.</div></section><footer>Sync count reflects successful state updates, not scheduled task executions.<br>Task ID: 6ab5b803776481918f6acae068d040cf</footer></main><script>const C={"cols":[["business","Business"],["location","Location"],["workflow","Visible workflow"],["hypothesis","Automation idea"],["contactRole","Ask for"],["phone","Phone"],["status","Status"]]};let s={items:[],runs:0},pin=localStorage.getItem("dashboardPin")||"";const e=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));async function load(){if(!pin)pin=prompt("Dashboard PIN")||"";localStorage.setItem("dashboardPin",pin);const r=await fetch("/api/state",{headers:{"x-dashboard-pin":pin}});if(r.status===401){localStorage.removeItem("dashboardPin");pin="";alert("Wrong PIN");return}if(r.ok)s=await r.json();render()}function render(){const a=s.items||[],q=search.value.toLowerCase(),f=q?a.filter(x=>JSON.stringify(x).toLowerCase().includes(q)):a;count.textContent=a.length;newCount.textContent=a.filter(x=>(x.status||"new").toLowerCase()==="new").length;runs.textContent=s.runs||0;updated.textContent=s.updatedAt?new Date(s.updatedAt).toLocaleString():"Not synced";rows.innerHTML=f.map(x=>"<tr>"+C.cols.map(([k])=>k==="url"&&/^https?:/.test(x[k]||"")?`<td><a target="_blank" href="${e(x[k])}">Open ↗</a></td>`:k==="status"?`<td><span class="status">${e(x[k]||"new")}</span></td>`:`<td>${e(x[k])}</td>`).join("")+"</tr>").join("");empty.style.display=f.length?"none":"block"}search.oninput=render;refresh.onclick=load;load();</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local Software Prospects</title>
+  <link rel="stylesheet" href="./dashboard.css">
+  <script src="./dashboard.js" defer></script>
+</head>
+<body>
+<main class="shell">
+  <header>
+    <div><h1>Local Software Prospects</h1><p>Fresh local businesses worth contacting for automation work</p></div>
+    <div class="header-actions"><span class="pill">Weekdays</span><button id="refresh" class="refresh-button" type="button">Refresh</button></div>
+  </header>
+  <div class="refresh-feedback">
+    <p id="refresh-status" role="status" aria-live="polite" aria-atomic="true">Dashboard data has not been loaded.</p>
+    <p class="muted">Checked at: <time id="checked">Not checked</time></p>
+  </div>
+  <div id="dashboard-content" aria-busy="false">
+    <section class="stats" aria-label="Persisted dashboard state">
+      <div class="card stat"><span class="muted">Items</span><b id="count">—</b></div>
+      <div class="card stat"><span class="muted">Explicitly new</span><b id="new-count">—</b></div>
+      <div class="card stat"><span class="muted">Successful syncs</span><b id="runs">—</b></div>
+      <div class="card stat"><span class="muted">Last successful sync</span><b id="updated" class="date">—</b></div>
+    </section>
+    <section class="dashboard-section" aria-labelledby="do-next-heading">
+      <div class="section-heading"><div><h2 id="do-next-heading">DO NEXT</h2><p>Review these records; confirm current relevance before acting.</p></div><span id="queue-count" class="muted">Waiting for saved data</span></div>
+      <div id="queue"></div>
+      <div id="queue-empty" class="card empty" hidden>No review-ready records. Check EXPLORE for details or missing status.</div>
+    </section>
+    <section class="dashboard-section" aria-labelledby="notice-heading">
+      <div class="section-heading"><div><h2 id="notice-heading">NOTICE</h2><p>Assessment coverage in the saved records.</p></div></div>
+      <div class="card notice">
+        <div><span class="muted">Assessed</span><b id="notice-assessed">—</b></div>
+        <div><span id="notice-unassessed-label" class="muted">Unassessed</span><b id="notice-unassessed">—</b></div>
+        <div><span class="muted">Historical imports</span><b id="notice-imported">—</b></div>
+      </div>
+    </section>
+    <section class="dashboard-section" aria-labelledby="explore-heading">
+      <div class="section-heading"><div><h2 id="explore-heading">EXPLORE</h2><p>All saved records, including closed and unassessed items.</p></div><span id="result-count" class="muted">Waiting for saved data</span></div>
+      <div class="card">
+        <div class="toolbar">
+          <label>Search records<input id="search" type="search" placeholder="Search all stored fields…" autocomplete="off"></label>
+          <label>Status<select id="status-filter"><option value="all">All statuses</option><option value="missing">Status not supplied</option></select></label>
+          <label>Assessment<select id="assessment-filter"><option value="all">All assessments</option><option value="assessed">Assessed</option><option value="unassessed">Unassessed</option></select></label>
+        </div>
+        <div class="table"><table><caption class="sr-only">Saved records for Local Software Prospects</caption><thead><tr><th scope="col">Business</th><th scope="col">Location</th><th scope="col">Visible workflow</th><th scope="col">Automation idea</th><th scope="col">Ask for</th><th scope="col">Phone</th><th scope="col">Status</th><th scope="col">Record details</th></tr></thead><tbody id="rows"></tbody></table></div>
+        <div id="empty" class="empty" hidden></div>
+      </div>
+    </section>
+  </div>
+  <footer>Successful syncs count persisted state updates, including historical imports, rather than scheduled task executions.<br>Refresh reads saved Dashboarda state; it does not run the scheduled task. Checked at is this browser's last successful read.<br>Task ID: 6ab5b803776481918f6acae068d040cf</footer>
+</main>
+<script id="dashboard-config" type="application/json">{"dashboard": "local-prospects", "cols": [["business", "Business"], ["location", "Location"], ["workflow", "Visible workflow"], ["hypothesis", "Automation idea"], ["contactRole", "Ask for"], ["phone", "Phone"], ["status", "Status"]], "titleFields": ["business"], "summaryField": "hypothesis", "scoreField": "priorityScore", "scoreLabel": "Priority"}</script>
+</body>
+</html>

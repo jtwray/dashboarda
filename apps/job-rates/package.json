@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "netlify dev",
-    "build": "echo static dashboard"
+    "build": "node ../../scripts/sync-dashboard-assets.mjs job-rates"
   },
   "dependencies": {
     "@netlify/blobs": "latest",

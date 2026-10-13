@@ -13,7 +13,7 @@ Production path: scheduled ChatGPT tasks → authenticated Dashboarda MCP → `d
 | 3D | Scheduled write outcomes and metric semantics | **Implemented; deployment and all-task prompt amendment subsequently reported by Tucker.** Five dashboards label persisted updates as successful syncs. Platform authorization/safety failures are not fixed by these labels. |
 | 4A | Optional data contract and v1 scoring | **Complete.** Accepted definitions in [DATA_CONTRACT.md](DATA_CONTRACT.md); no producer, API, storage, or UI changes. |
 | 4B | Curated historical backfill | **Complete for the approved scope — six records persisted and verified.** [BACKFILL_MANIFEST.md](BACKFILL_MANIFEST.md#11-approved-gate-2-execution--2026-10-12-edt--2026-10-13-utc): LP01–LP05 and CJ01, two batches/two successful sync events after explicit approval. No duplicates or unexpected read-back; 21 held/12 excluded entries remain unapproved. No Email Action historical retry. |
-| 4C | Shared DO NEXT / NOTICE / EXPLORE + Refresh UX | **Planned.** Harden Refresh feedback and no-store fetching; build mobile-friendly hierarchy with legacy/unscored fallbacks. |
+| 4C | Shared DO NEXT / NOTICE / EXPLORE + Refresh UX | **Implemented and tested; deployment pending.** All five task sites share a conservative record-review queue, assessment/import summary, complete searchable/filterable records, mobile layout and no-store Refresh with failure/unchanged feedback and client Checked at. Specialized action recommendations and NOTICE charts remain 4D–4H. |
 | 4D–4H | Dashboard-specific decision queues and visualizations | **Planned.** Email Action, Local Prospects, Job Rates, Christian Jobs, Jeep Watch. |
 | 5 | Dogfood/refine/stabilize | **Planned.** Verify usefulness and data quality through real use. |
 
@@ -25,13 +25,13 @@ Planned UI hierarchy: **DO NEXT** (ranked actions) → **NOTICE** (one dashboard
 2. **4B Gate 1 complete:** curated manifest and identity correction reviewed; only LP01–LP05 and CJ01 approved.
 3. Diagnose remaining blocked writes from bounded primary run/tool evidence. If needed later, scope execution/outcome telemetry separately; do not treat label corrections as an authorization fix or build a generalized telemetry system.
 4. **4B Gate 2 complete for the approved six records:** bounded writes and complete read-back reconciled. Additional held candidates require separate approval and fresh checks.
-5. Implement **4C** shared structure and Refresh UX hardening.
+5. Review and operator-deploy the implemented **4C** shared structure/Refresh from `feature/shared-dashboard-ui` to the five task sites; no MCP deployment or merge is required.
 6. Implement dashboard-specific queues/visualizations (**4D–4H**).
 7. Dogfood, refine, and stabilize (**5**).
 
 Natural scheduled-run verification for Local Prospects can complete **in parallel** when its normal schedule runs. Job Rates is now naturally proven per October 12 evidence. Local Prospects' historical five-record batch does not verify its schedule; backfill imports **never count** as natural-run proof.
 
-4C Refresh finding: existing buttons do fetch state but give poor feedback when nothing changes. Use `fetch("/api/state", { cache: "no-store" })`, visible **Refreshing** state and success/failure feedback, plus a client-side **Checked at** timestamp. Keep Checked at distinct from server-side **Last successful sync** / `updatedAt`. **Do not implement in 3D or 4B.**
+4C addresses the prior Refresh finding: reads use `cache: "no-store"`, show **Refreshing**, confirm unchanged/changed data, and report failures while retaining the last good view. Client **Checked at** advances only after a valid successful read, separately from server **Last successful sync** / `updatedAt`. Refresh does not execute a scheduled task or advance persisted sync counters. This was implemented in 4C, not 3D/4B; production deployment remains pending.
 
 **4B Gate 2:** successful import batches increment the same persistence counter, consistently with **Successful syncs**. No new persistence/schema blocker follows from 3D or from an unattended write being blocked. Approved imports still require a working authorized write path, a complete fresh state snapshot, safe identities, and read-back reconciliation. For Email Action, review the audit's failed-actionable candidates against source messages and current state before importing. Stop a blocked/rejected write; reconcile an uncertain outcome without automatic retry. Imports do not establish scheduled-run health.
 

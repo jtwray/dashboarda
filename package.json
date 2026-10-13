@@ -3,5 +3,12 @@
   "private": true,
   "workspaces": [
     "apps/*"
-  ]
+  ],
+  "scripts": {
+    "sync:dashboards": "node scripts/sync-dashboard-assets.mjs",
+    "test:ui": "node --test test/dashboard-ui.test.cjs",
+    "test": "npm run test:ui && npm test --workspace @dashboarda/mcp",
+    "typecheck": "npm run typecheck --workspace @dashboarda/mcp",
+    "build": "npm run build --workspaces --if-present"
+  }
 }
