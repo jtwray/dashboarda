@@ -7,12 +7,12 @@ Production path: scheduled ChatGPT tasks → authenticated Dashboarda MCP → `d
 | 1A | Auth proof | **Complete — production proven.** Auth0 OAuth/CIMD and authenticated ping. |
 | 1B | MCP read/write | **Complete — production proven.** Exactly three tools, five fixed routes, existing persistence. |
 | 2 | Email unattended scheduled write | **Complete — production proven.** |
-| 3 | Wire all five scheduled tasks | **Implemented.** Natural-run sync proven for Email Action, Christian Jobs, and Jeep Watch; **pending** for Local Prospects and Job Rates. |
+| 3 | Wire all five scheduled tasks | **Implemented.** Natural-run sync proven for Email Action, Christian Jobs, Job Rates, and Jeep Watch per October 12 evidence; **pending** for Local Prospects. Backfill does not close natural proof. |
 | 3B | Zero-result scheduled synchronization | **Complete — deployed and production proven.** Upsert accepts 0–50 items; all five prompts require one batched sync per run, including `items: []`. |
 | 3C | Email Monitor decision-path audit | **Completed — 2026-10-11, with evidence limits.** Confirmed real-email persistence; recovered outputs report authorization/safety-blocked writes. Full tool logs were unavailable, so exact failure mechanisms remain partly unproven. |
-| 3D | Scheduled write outcomes and metric semantics | **Implemented; deployment pending.** Five dashboards label persisted updates as successful syncs. Failure-notification amendment proposed for all five tasks, not applied. Platform authorization/safety failures are not fixed by these labels. |
+| 3D | Scheduled write outcomes and metric semantics | **Implemented; deployment and all-task prompt amendment subsequently reported by Tucker.** Five dashboards label persisted updates as successful syncs. Platform authorization/safety failures are not fixed by these labels. |
 | 4A | Optional data contract and v1 scoring | **Complete.** Accepted definitions in [DATA_CONTRACT.md](DATA_CONTRACT.md); no producer, API, storage, or UI changes. |
-| 4B | Curated historical backfill | **Gate 1 prepared — review pending.** [BACKFILL_MANIFEST.md](BACKFILL_MANIFEST.md) contains complete item snapshots, candidate/source/identity review and a proposed batch plan. No production backfill performed; Gate 2 requires explicit approval of specific payloads. 4B is not complete. |
+| 4B | Curated historical backfill | **Complete for the approved scope — six records persisted and verified.** [BACKFILL_MANIFEST.md](BACKFILL_MANIFEST.md#11-approved-gate-2-execution--2026-10-12-edt--2026-10-13-utc): LP01–LP05 and CJ01, two batches/two successful sync events after explicit approval. No duplicates or unexpected read-back; 21 held/12 excluded entries remain unapproved. No Email Action historical retry. |
 | 4C | Shared DO NEXT / NOTICE / EXPLORE + Refresh UX | **Planned.** Harden Refresh feedback and no-store fetching; build mobile-friendly hierarchy with legacy/unscored fallbacks. |
 | 4D–4H | Dashboard-specific decision queues and visualizations | **Planned.** Email Action, Local Prospects, Job Rates, Christian Jobs, Jeep Watch. |
 | 5 | Dogfood/refine/stabilize | **Planned.** Verify usefulness and data quality through real use. |
@@ -21,15 +21,15 @@ Planned UI hierarchy: **DO NEXT** (ranked actions) → **NOTICE** (one dashboard
 
 ## Immediate execution order
 
-1. Review the completed **3C audit** and **3D** outcome policy in [DECISIONS.md](DECISIONS.md). Apply the proposed task amendment only after review, separately from this development slice; review 3C before approving Email Action Gate 2 imports.
-2. Prepare **4B Gate 1** curated backfill manifest, subject to reviewed sources, full-state snapshot, identity safety, and explicit approval before writes.
+1. Retain the completed **3C audit** and **3D** outcome policy in [DECISIONS.md](DECISIONS.md). Tucker reports the prompt amendment applied separately; review 3C and current source/actionability before any later Email Action import approval.
+2. **4B Gate 1 complete:** curated manifest and identity correction reviewed; only LP01–LP05 and CJ01 approved.
 3. Diagnose remaining blocked writes from bounded primary run/tool evidence. If needed later, scope execution/outcome telemetry separately; do not treat label corrections as an authorization fix or build a generalized telemetry system.
-4. Execute approved **4B Gate 2** backfill with bounded writes and read-back reconciliation.
+4. **4B Gate 2 complete for the approved six records:** bounded writes and complete read-back reconciled. Additional held candidates require separate approval and fresh checks.
 5. Implement **4C** shared structure and Refresh UX hardening.
 6. Implement dashboard-specific queues/visualizations (**4D–4H**).
 7. Dogfood, refine, and stabilize (**5**).
 
-Natural scheduled-run verification for Local Prospects and Job Rates can complete **in parallel** when their normal schedules run; pending verification is not a 3C or 4B Gate 1 blocker. Backfill imports **never count** as natural-run proof.
+Natural scheduled-run verification for Local Prospects can complete **in parallel** when its normal schedule runs. Job Rates is now naturally proven per October 12 evidence. Local Prospects' historical five-record batch does not verify its schedule; backfill imports **never count** as natural-run proof.
 
 4C Refresh finding: existing buttons do fetch state but give poor feedback when nothing changes. Use `fetch("/api/state", { cache: "no-store" })`, visible **Refreshing** state and success/failure feedback, plus a client-side **Checked at** timestamp. Keep Checked at distinct from server-side **Last successful sync** / `updatedAt`. **Do not implement in 3D or 4B.**
 

@@ -1,8 +1,8 @@
-# Curated Historical Backfill Manifest — Slice 4B Gate 1
+# Curated Historical Backfill Manifest — Slice 4B
 
-**Prepared 2026-10-12. Gate 1 only; NOT authorization to import.**
+**Gate 1 prepared 2026-10-12; approved Gate 2 completed and verified that evening (America/New_York).** Tucker approved only **LP01–LP05 and CJ01** from the corrected manifest at `48995f3d96d8cd4c330b0a4b53d8f2d250161be5`. Sections 1–10 preserve the Gate 1 review and dated snapshots; section 11 records the production execution. Held/excluded records remain unapproved.
 Branch: `feature/curated-backfill` · starting commit: `b722b4f1d714c1925a36f2a90ad7b49bba07d045`.
-Scope: recover useful historical records; no production writes, retries, task executions, configuration changes, merges or deployments.
+Gate 1 scope: recover useful historical records; no production writes, retries, task executions, configuration changes, merges or deployments. Gate 2 subsequently imported only the six explicitly approved payloads through the existing MCP.
 
 **Recommendation:** propose six new records for Tucker's individual approval: **LP01–LP05 and CJ01**. Hold 21 for manual review; exclude 12 from this bounded review. Recommendation **APPROVE CANDIDATE** means review-ready, not already approved. No candidate is numerically scored; older ad hoc fit numbers are not reused as 4A v1 scores.
 
@@ -647,3 +647,49 @@ Local Prospects natural proof remains independent: a backfill-derived `runs:1` c
 ## 10. Final read-only checkpoint
 
 Second complete, count-checked reads completed by **2026-10-12T13:47:04.465Z**. All five returned states are identical to the initial snapshot: item fields/identities, totals, Successful sync counters and updatedAt are unchanged. No production state was written by Gate 1.
+
+## 11. Approved Gate 2 execution — 2026-10-12 EDT / 2026-10-13 UTC
+
+**Approved scope complete.** Tucker's **“Approved”** at `2026-10-12T20:17:47-04:00` followed the explicit request to approve the corrected exact LP01–LP05 and CJ01 payloads and the two-batch plan. No held/excluded candidate was authorized. All six payloads in section 4 were submitted unchanged, including LP02's public-brand identity and the omission of prospect URLs.
+
+### Fresh reconciliation and sources
+
+Authenticated `dashboard_read(limit:50)` reads of all five dashboards completed by **2026-10-13T00:18:15.809Z**. Each passed `total === items.length`. All 13 existing records and their fields/identities still matched section 1; only Email Action and Jeep Watch sync metadata had advanced since Gate 1. Both target dashboards remained empty, so all six exact keys and logical aliases were absent. No existing item was enriched or retagged.
+
+The section 4 sources were rechecked before writing. DSB, Holland, Atlas's contact page, Four Seasons, Vernon, and the ABS advertisement remained accessible and supported the approved payloads. Atlas's secondary services page was unavailable through the lookup tool; its accessible official contact page independently confirmed the phone, Martinsville identity and ordinary-appointment/emergency distinction. The ABS advertisement still displayed an application route; that does not independently resolve Virginia eligibility, faith affirmation, travel or the employer-ATS requisition. Those caveats remain in the record. No payload was silently amended or scored.
+
+Local Prospects still had no natural successful sync at the fresh baseline. Its pending natural-run proof was not a technical prerequisite for these authorized historical imports and remains pending afterward.
+
+### One attempt per batch, followed by complete read-back
+
+| Dashboard | Imported IDs | Received | Total before → after | Successful syncs before → after | Persisted `updatedAt` (UTC) | Immediate read-back completed (UTC) |
+| --- | --- | ---: | ---: | ---: | --- | --- |
+| local-prospects | LP01–LP05 | 5 | 0 → 5 | 0 → 1 | 2026-10-13T00:19:11.851Z | 2026-10-13T00:19:22.297Z |
+| christian-jobs | CJ01 | 1 | 0 → 1 | 2 → 3 | 2026-10-13T00:19:38.401Z | 2026-10-13T00:19:51.608Z |
+
+The Local Prospects read-back passed before the Christian Jobs attempt. Christian Jobs was read again immediately before its write and remained empty at two syncs. Both tools returned successful compact receipts; complete read-back agreed with each receipt. There were exactly two upsert attempts, no empty calls, retries, alternate routes or corrective writes.
+
+| ID | Verified persisted key | `firstSeenAt` = `lastSeenAt` (UTC) |
+| --- | --- | --- |
+| LP01 | `business:DSB Lawn Service LLC\|Danville, VA` | 2026-10-13T00:19:11.851Z |
+| LP02 | `business:Holland Fence\|Axton, VA` | 2026-10-13T00:19:11.851Z |
+| LP03 | `business:Atlas Garage Door Sales & Service\|Martinsville, VA` | 2026-10-13T00:19:11.851Z |
+| LP04 | `business:Four Seasons Heating, Cooling & Electrical\|Danville, VA` | 2026-10-13T00:19:11.851Z |
+| LP05 | `business:Vernon Roof Experts\|Martinsville, VA` | 2026-10-13T00:19:11.851Z |
+| CJ01 | `url:https://www.indeed.com/viewjob?jk=963db30c49908c59` | 2026-10-13T00:19:38.401Z |
+
+Every imported row has `backfilled:true` and `seenCount:1`. Its persisted fields equal the approved payload plus only `_key`, `firstSeenAt`, `lastSeenAt` and `seenCount`. No duplicate keys/logical records, unexpected items, fabricated `originallyObservedAt`, posting dates, numeric scores or extra fields were found. Persistence timestamps fall within their actual write-attempt intervals, rather than the historical discovery dates. Native `runHistory` remains unavailable through MCP and was not independently read; its implementation/bound were unchanged.
+
+### Final production checkpoint
+
+Complete final reads finished by **2026-10-13T00:19:52.987Z** (October 12, 8:19:52 PM EDT). Target states matched their immediate read-backs. All three untouched dashboard states, including every existing field and sync timestamp, matched the fresh pre-write snapshot exactly.
+
+| Dashboard | Total before → after | Successful syncs before → after | Final `updatedAt` (UTC) | Gate 2 disposition |
+| --- | ---: | ---: | --- | --- |
+| email-action | 4 → 4 | 48 → 48 | 2026-10-12T20:05:38.700Z | No write; EA01–EA03 remain held/unapproved |
+| christian-jobs | 0 → 1 | 2 → 3 | 2026-10-13T00:19:38.401Z | CJ01 verified |
+| local-prospects | 0 → 5 | 0 → 1 | 2026-10-13T00:19:11.851Z | LP01–LP05 verified; natural-run proof still pending |
+| job-rates | 9 → 9 | 1 → 1 | 2026-10-12T12:14:59.256Z | No write; nine existing records preserved |
+| jeep-watch | 0 → 0 | 8 → 8 | 2026-10-12T20:11:02.392Z | No write |
+
+The two added Successful sync events are approved historical imports, not scheduled task executions or natural-run proof. This completes the approved six-record 4B scope; **21 manual-review entries remain held and 12 excluded entries remain excluded**. Email Action historical outcomes were not retried or repaired. Any later import requires its own current relevance/identity reconciliation and explicit payload approval. No application, MCP, scoring, authentication, permission, scheduled-task or persistence behavior changed. No merge or deployment was performed or required for these data writes.

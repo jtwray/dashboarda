@@ -9,12 +9,12 @@ Scheduled ChatGPT tasks → authenticated Dashboarda MCP → `dashboard_upsert` 
 - **1A:** complete and production proven — Auth0 OAuth/CIMD and authenticated `dashboard_ping`.
 - **1B:** complete and production proven — exactly `dashboard_ping`, `dashboard_read`, `dashboard_upsert` on `https://dashboarda-mcp.netlify.app/mcp`. Fixed allowlist of five task dashboards; home-board excluded. Read requires `dashboard:read`, defaults to 20 items/caps at 50, omits run history. Upsert requires `dashboard:write`, accepts **0–50** objects, and forwards only `{ items }`. Downstream credentials remain server-side; uncertain writes are not automatically retried.
 - **2:** complete and production proven — unattended scheduled Email Action write.
-- **3:** implemented for all five scheduled tasks. Natural scheduled-run sync evidence is confirmed for **three** dashboards; **two** remain pending.
+- **3:** implemented for all five scheduled tasks. Natural scheduled-run sync evidence is confirmed for **four** dashboards per October 12 evidence; **Local Prospects** remains pending. Historical imports do not close this gate.
 - **3B:** **complete, deployed, and production proven** — zero-result scheduled synchronization works end-to-end. All five prompts have the durable exactly-one-upsert-attempt-per-run rule.
 - **3C:** audit completed 2026-10-11 with evidence limits. Empower/KFORCE real-email persistence was confirmed; recovered outputs report recruiter writes blocked by authorization/safety checks. Full underlying tool logs were unavailable, so not every root cause is proven.
-- **3D:** UI metric wording and outcome semantics implemented on `fix/scheduled-write-outcomes`; deployment not performed. The proposed all-task failure-notification amendment is documented in [DECISIONS.md](DECISIONS.md), **not applied**. No platform authorization/safety failure mechanism is marked fixed.
+- **3D:** UI metric wording and outcome semantics implemented on `fix/scheduled-write-outcomes`; Tucker subsequently reports deployment and application of the all-task failure-notification rule documented in [DECISIONS.md](DECISIONS.md). No platform authorization/safety failure mechanism is marked fixed; no deployment or task change was performed during 4B.
 - **4A:** **complete** — optional normalized fields, deterministic v1 scoring, evidence and provenance rules defined in [DATA_CONTRACT.md](DATA_CONTRACT.md). Backward-compatible, documentation-only contract; runtime and stored items unchanged.
-- **4B:** **Gate 1 manifest prepared; review pending** — [BACKFILL_MANIFEST.md](BACKFILL_MANIFEST.md). No production backfill performed. Specific candidate/payload approval remains required before Gate 2; 4B is not complete.
+- **4B:** **Complete for the approved six-record scope** — LP01–LP05 and CJ01 imported once and verified after Tucker's explicit approval. [BACKFILL_MANIFEST.md](BACKFILL_MANIFEST.md#11-approved-gate-2-execution--2026-10-12-edt--2026-10-13-utc) records the fresh snapshots, receipts and reconciliation. Twenty-one manual-review entries remain held; twelve remain excluded. No Email Action historical write was replayed.
 - **4C onward:** planned — shared decision UI and Refresh UX, then dashboard-specific views.
 
 ## Natural production sync evidence — 2026-10-10
@@ -33,7 +33,21 @@ Every scheduled prompt now contains:
 
 > Always call Dashboarda dashboard_upsert exactly once per scheduled run. When qualifying items exist, send them in one batch. When none exist, call dashboard_upsert with items: []. Never retry an uncertain write.
 
-This is an orchestration rule, **not a guarantee of exactly-once delivery**. Retain task-specific filtering and notifications. Verify remaining two dashboards via normal scheduled execution and state read-back; do not fabricate receipts or use historical imports as proof.
+This is an orchestration rule, **not a guarantee of exactly-once delivery**. Retain task-specific filtering and notifications. At this dated October 10 snapshot two dashboards remained pending; October 12 evidence subsequently confirmed Job Rates. Verify Local Prospects through normal scheduled execution and state read-back; do not fabricate receipts or use historical imports as proof.
+
+## Approved historical imports — October 12, 2026 (America/New_York)
+
+Gate 2 completed at about 8:19 PM EDT. Complete reads (`total === items.length`) preceded writes and followed each batch. Every new row matched its approved payload, had a unique expected key, `backfilled:true`, `seenCount:1`, and actual import-time `firstSeenAt`/`lastSeenAt`. `originallyObservedAt` and numeric scores remain absent. The untouched dashboard states were identical before/after. MCP omits native `runHistory`; no claim is made to have independently read it.
+
+| Dashboard | Items before → after | Successful syncs before → after | Final `updatedAt` (UTC) |
+| --- | ---: | ---: | --- |
+| email-action | 4 → 4 | 48 → 48 | 2026-10-12T20:05:38.700Z |
+| christian-jobs | 0 → 1 | 2 → 3 | 2026-10-13T00:19:38.401Z |
+| local-prospects | 0 → 5 | 0 → 1 | 2026-10-13T00:19:11.851Z |
+| job-rates | 9 → 9 | 1 → 1 | 2026-10-12T12:14:59.256Z |
+| jeep-watch | 0 → 0 | 8 → 8 | 2026-10-12T20:11:02.392Z |
+
+Exactly one upsert per approved dashboard batch, no retries or corrective writes. Local Prospects' first successful sync here is **historical backfill, not natural-run proof**; its natural verification remains pending. EA01–EA03 remain held and unapproved. No production schema/code, task, permission, merge or deployment changes were needed.
 
 ## Current metric and failure semantics — Slice 3D
 
@@ -46,11 +60,11 @@ The five task dashboards use these labels and a brief clarification; stored fiel
 
 At the **2026-10-11 audit**, latest Email Monitor execution was `2026-10-11T20:29:21.700254Z` (4:29 PM EDT), while last successful Email Action sync was `2026-10-10T21:19:17.146Z` (5:19 PM EDT; 4 items, 28 syncs). These are historical audit observations, not current live readings or a count of missed runs. Task execution and persisted sync are distinct events. Tucker reports Dashboarda's plugin-specific permission already set to **Allow all actions**; this does not bypass platform authorization or safety review.
 
-**Proposed reporting policy:** a rejected, authorization-blocked, safety-blocked, failed, or uncertain required sync must notify Tucker even when there are zero qualifying results. Zero results may stay silent only after confirmed successful sync. Current prompts contain no explicit failure override for their no-results silence rule; [DECISIONS.md](DECISIONS.md) supplies the exact amendment for later review/application. This is an orchestration policy, not a guarantee Dashboarda can observe an action blocked before MCP.
+**Reporting policy:** a rejected, authorization-blocked, safety-blocked, failed, or uncertain required sync must notify Tucker even when there are zero qualifying results. Zero results may stay silent only after confirmed successful sync. The amendment proposed in 3D is in [DECISIONS.md](DECISIONS.md); Tucker reports it subsequently applied to all five prompts. This is an orchestration policy, not a guarantee Dashboarda can observe an action blocked before MCP.
 
 ## Next gates and known UX finding
 
-**4B is not blocked by the two pending natural-run checks.** First capture complete existing state (MCP reads are bounded), approve a source-grounded backfill manifest, preserve endpoint identity and true persistence `firstSeenAt`, pilot a small batch, and reconcile the read-back before expansion. Historical imports must be curated; see [DATA_CONTRACT.md](DATA_CONTRACT.md).
+**Approved 4B scope is verified; Local Prospects natural-run proof remains independent.** Any further historical import needs a fresh complete snapshot (MCP reads are bounded), separately approved source-grounded payloads, preserved identity/true persistence `firstSeenAt`, and immediate read-back reconciliation. Historical imports must be curated; see [DATA_CONTRACT.md](DATA_CONTRACT.md).
 
 One successful 4B batch adds one successful sync even if every item already exists. That reporting distinction is acceptable; no new origin field or history redesign is needed. Approved Gate 2 can proceed through a working authorized write path after manifest/audit review, including Email Action source/identity reconciliation. A blocked write must stop; an uncertain write requires read-back reconciliation without retry. Gate 1 remains read-only and independent. No 4B writes were performed in 3D.
 
