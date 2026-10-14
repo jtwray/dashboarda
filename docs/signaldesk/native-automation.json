@@ -1,8 +1,8 @@
 {
   "id": "wflZOl0vNykBlcGGe",
-  "name": "Qualified prospect → initial outreach review",
+  "name": "Qualified prospect \u2192 initial outreach review",
   "description": "When a prospect first becomes Qualified and has no initial outreach activity, create a linked human-review task due two days after qualification, then mark it handled. Research sync never edits qualification or task state. No messages are sent.",
-  "deploymentStatus": "undeployed",
+  "deploymentStatus": "deployed",
   "deploymentError": null,
   "trigger": {
     "type": "recordMatchesConditions",

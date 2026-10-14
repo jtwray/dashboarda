@@ -98,7 +98,107 @@
     "qaId": "recHo67amPeWxIQox"
   },
   "qaRecordId": "recHo67amPeWxIQox",
-  "qualificationAutomationStatus": "undeployed",
-  "nativeRuns": [],
-  "transport": "Core syncProspects engine transpiled from committed TypeScript and executed against authenticated Airtable connector adapter; REST PAT client and Netlify schedule not live-verified"
+  "qualificationAutomationStatus": "deployed",
+  "nativeRuns": [
+    {
+      "runId": "wfxrOpfFEjiBGAMN4",
+      "status": "success",
+      "startedTime": "2026-10-14T21:44:04.000Z",
+      "finishedTime": "2026-10-14T21:44:06.000Z",
+      "durationMs": 2000,
+      "deploymentId": "wfdEP5oaORJWVYZHy",
+      "failure": null
+    }
+  ],
+  "transport": "Core syncProspects engine transpiled from committed TypeScript and executed against authenticated Airtable connector adapter; REST PAT client and Netlify schedule not live-verified",
+  "nativeProspect": {
+    "id": "recHo67amPeWxIQox",
+    "createdTime": "2026-10-14T21:38:18.000Z",
+    "cellValuesByFieldId": {
+      "fld0v6boAvJqnihNI": [
+        {
+          "id": "rec8rbbYxbL4ZzECi",
+          "name": "Initial outreach review"
+        }
+      ],
+      "fldBHmCe3cwezkH5W": "Synthetic integration test only; do not contact.",
+      "fldCvHXFwxHXXWod5": {
+        "id": "selv61trlYOBN9v9u",
+        "name": "Qualified",
+        "color": "grayLight2"
+      },
+      "fldGyc6o7XsF1qfAb": 1,
+      "fldJtjkxU4DjZfch2": "local-prospects:qa:signaldesk-preservation-20261014",
+      "fldL5AQtNTCgrawV9": "[QA] SignalDesk preservation test \u2014 not a prospect",
+      "fldNyoqsQVHHMICLR": "Synthetic QA fixture",
+      "fldQPHslLwRaYUwNp": "QA preservation marker \u2014 user-owned notes must survive research updates.",
+      "fldRr3Nfto2RWhjme": "2026-10-16T21:45:01.000Z",
+      "fldXqIh3tBHAbNyvo": true,
+      "fldoPpFiu4nKtss1o": "QA reference workflow v4 \u2014 completed task preservation",
+      "fldt2YU4Jsnqiga3n": "2026-10-14T21:44:46.801Z",
+      "fldvgyzMW89g9AWqM": "2026-10-14T21:38:12.656Z"
+    }
+  },
+  "nativeTask": {
+    "id": "rec8rbbYxbL4ZzECi",
+    "createdTime": "2026-10-14T21:44:05.000Z",
+    "cellValuesByFieldId": {
+      "fldDS5nOg9orwtPaC": {
+        "id": "selmlTDaZo0HAcR5D",
+        "name": "Completed",
+        "color": "grayLight2"
+      },
+      "fldT9jKY7VPJ3SBYh": "2026-10-14T21:44:47.000Z",
+      "fldUgHwBi6ypA8Axy": "Initial outreach review",
+      "fldXsAzhgVQtawQvr": "Review the research and contact details. Draft a personal introduction for human approval. Do not send automatically.",
+      "fldaz1VRHsmhVkx1Y": {
+        "id": "selRwAaFH9pVyh8jk",
+        "name": "Initial outreach",
+        "color": "grayLight2"
+      },
+      "fldoCAaq6Dmp53DlG": "2026-10-17T21:44:04.000Z",
+      "fldv2Gni3gnptdJxL": {
+        "linkedRecordIds": [
+          "recHo67amPeWxIQox"
+        ],
+        "valuesByLinkedRecordId": {
+          "recHo67amPeWxIQox": [
+            "local-prospects:qa:signaldesk-preservation-20261014"
+          ]
+        }
+      },
+      "fldwL2r1q88wN6rLb": [
+        {
+          "id": "recHo67amPeWxIQox",
+          "name": "[QA] SignalDesk preservation test \u2014 not a prospect"
+        }
+      ],
+      "fldyaBNKKwiEV2Z82": 1
+    }
+  },
+  "qualificationStartedAt": "2026-10-14T21:44:03.926Z",
+  "postNativeSync": {
+    "at": "2026-10-14T21:44:33.207Z",
+    "outcome": {
+      "status": "success",
+      "source": 1,
+      "unchanged": 0,
+      "confirmed": 1,
+      "uncertain": 0,
+      "pending": 0
+    }
+  },
+  "completedTaskSync": {
+    "at": "2026-10-14T21:44:51.803Z",
+    "outcome": {
+      "status": "success",
+      "source": 1,
+      "unchanged": 0,
+      "confirmed": 1,
+      "uncertain": 0,
+      "pending": 0
+    }
+  },
+  "serialTransitionsCompletedAt": "2026-10-14T21:45:00.813Z",
+  "nativeVerification": "One successful native run; exactly one linked initial task after research refreshes, serial requalification, completion, user-edited due date and another serial requalification. The task's status and due date survived later sync. No manual Activity creation."
 }

@@ -1,6 +1,6 @@
 # Airtable setup and release runbook
 
-**Current state:** base and linked schema created; five real prospects imported; repeat and isolated preservation checks passed via the connector. Native automation is a validated **off draft**; native execution and scheduled Netlify operation are not verified. Setup steps below remain the reproducible recipe. See EVIDENCE.md for completed operations. Never send outreach from this workflow.
+**Current state:** base and linked schema created; five real prospects imported; repeat and isolated preservation checks passed via the connector. Native automation is **enabled and successfully tested**, including serial deduplication and completed-task preservation. Scheduled Netlify operation remains unverified. Setup steps below remain the reproducible recipe. See EVIDENCE.md for completed operations. Never send outreach from this workflow.
 
 ## 1. Create or select a Free workspace base
 
@@ -140,3 +140,7 @@ Record actual dates, URLs, record IDs, counts and screenshots in EVIDENCE.md. Ne
 - After enabling, use the clearly labelled QA prospect recHo67amPeWxIQox for first qualification, repeat updates and serial requalification tests. Leave real prospects' qualification decisions to the user.
 - Netlify base/table IDs are already set with Functions scope in production, bridge disabled. Add only AIRTABLE_TOKEN through the secrets UI, restricted to this base with data.records:read and data.records:write. Connected plugin OAuth does not supply credentials to Netlify. Do not enable the bridge or deploy over the current production lineage until release review.
 - New and Qualified, Follow-Up Due and Completed were created as native **interface filter tabs** across two grid pages. The base's default Grid views remain available; no additional base-grid views were created through the connector.
+
+## Native acceptance completed — 21:44 UTC
+
+The user enabled the automation. QA trigger run succeeded, creating the correctly linked task and two-day due date. Two subsequent serial qualification cycles did not duplicate it. Completed status, edited due date, Notes and links survived research refreshes. Do not repeat the editor Create record test against the handled QA prospect. Next: provision the independent Netlify runtime PAT, review release lineage, deploy only Local Prospects, and capture an actual scheduled invocation.
