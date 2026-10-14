@@ -68,3 +68,12 @@ User enabled the valid automation. Read-back verified deploymentStatus=deployed 
 - A second serial New → Qualified cycle after completion still left one task, count=1, marker=true and only the original successful native run. The computed prospect Follow-up target changes after requalification; the existing task's edited Due date remains independent.
 - These are real Airtable native-run observations using a synthetic QA record. Real imported businesses were not qualified or contacted. Netlify schedule and REST PAT transport remain unverified.
 - Complete structured receipts and the deployed native configuration are in live-evidence.json and native-automation.json.
+
+## Runtime credential and redeploy check — 2026-10-14, 22:06 UTC
+
+- User saved AIRTABLE_TOKEN and redeployed without cache. Netlify read-back confirms the key exists and is marked secret, with Functions scope and production context. Its plaintext was not read, logged or committed. Key existence is not proof its Airtable authorization works.
+- Published deploy 6acffc6d1473b237a87a73bc is ready, production, published 2026-10-14T22:04:47.741Z. It rebuilt **fix/scheduled-write-outcomes**, commit b722b4f1d714c1925a36f2a90ad7b49bba07d045. Available functions: only state; function_schedules empty. `/api/signaldesk/status` returns 404. This deploy does not contain SignalDesk.
+- Authenticated Dashboarda MCP read still returns five prospects, runs=1, updatedAt=2026-10-13T00:19:11.851Z. No source mutation occurred during QA.
+- Verified Local Prospects UI is byte-identical between the production lineage's index.html and the feature branch's public/index.html. Existing state handler is byte-identical. Release must target **only** the existing Local Prospects site.
+- Netlify connector write operations reported success for SIGNALDESK_ENABLED, AIRTABLE_BASE_ID and AIRTABLE_PROSPECTS_TABLE_ID, but fresh getAllEnvVars calls do not show those keys. Therefore configuration persistence is **not verified**, and earlier entries claiming those keys were configured are superseded. Do not infer success from the write acknowledgement; user must set/read back them in Netlify UI.
+- Remaining settings: production branch feature/airtable-signaldesk; base directory apps/local-prospects; build npm run build; publish public (relative to base); functions netlify/functions. Add the two actual base/table IDs from live-evidence.json and SIGNALDESK_ENABLED=false in production Functions scope. Deploy and verify state, signaldesk-sync and signaldesk-status before enabling.

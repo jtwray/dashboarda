@@ -144,3 +144,15 @@ Record actual dates, URLs, record IDs, counts and screenshots in EVIDENCE.md. Ne
 ## Native acceptance completed — 21:44 UTC
 
 The user enabled the automation. QA trigger run succeeded, creating the correctly linked task and two-day due date. Two subsequent serial qualification cycles did not duplicate it. Completed status, edited due date, Notes and links survived research refreshes. Do not repeat the editor Create record test against the handled QA prospect. Next: provision the independent Netlify runtime PAT, review release lineage, deploy only Local Prospects, and capture an actual scheduled invocation.
+
+## Redeploy correction — 22:06 UTC
+
+The user's cache-cleared redeploy succeeded but used the old production branch, so SignalDesk functions are absent. AIRTABLE_TOKEN is now present and secret. The three non-token connector writes could not be confirmed by read-back and must be configured in the UI:
+
+| Variable | Value |
+|---|---|
+| SIGNALDESK_ENABLED | false |
+| AIRTABLE_BASE_ID | appRoOSGbph3XGzNu |
+| AIRTABLE_PROSPECTS_TABLE_ID | tbloVnuQ2fVEcOlDx |
+
+Use Production context and Functions scope. Leave the token secret. On **dashboarda-local-prospects only**, change the production branch to feature/airtable-signaldesk; verify base apps/local-prospects, build npm run build, publish public relative to base, functions netlify/functions. This deploys the isolated feature without merging main. The existing production UI and state handler were compared and match the feature branch exactly. Redeploy, confirm three functions exist, and keep the bridge disabled until runtime validation. Other Dashboarda sites must retain their existing settings.

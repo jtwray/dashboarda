@@ -200,5 +200,17 @@
     }
   },
   "serialTransitionsCompletedAt": "2026-10-14T21:45:00.813Z",
-  "nativeVerification": "One successful native run; exactly one linked initial task after research refreshes, serial requalification, completion, user-edited due date and another serial requalification. The task's status and due date survived later sync. No manual Activity creation."
+  "nativeVerification": "One successful native run; exactly one linked initial task after research refreshes, serial requalification, completion, user-edited due date and another serial requalification. The task's status and due date survived later sync. No manual Activity creation.",
+  "runtimeCredentialKeyPresent": true,
+  "runtimeCredentialVerified": false,
+  "userRedeploy": {
+    "id": "6acffc6d1473b237a87a73bc",
+    "branch": "fix/scheduled-write-outcomes",
+    "commit": "b722b4f1d714c1925a36f2a90ad7b49bba07d045",
+    "functions": [
+      "state"
+    ],
+    "schedules": []
+  },
+  "netlifyNonSecretConfigPersistenceVerified": false
 }
