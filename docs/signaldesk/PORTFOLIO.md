@@ -1,0 +1,11 @@
+# SignalDesk — Airtable Automation Bridge
+
+## Current defensible description (implementation complete, live acceptance pending)
+
+I implemented and locally tested a TypeScript bridge from an existing prospect-research dashboard to Airtable. It reuses the dashboard's persisted identities, maps only research-owned fields, and preserves qualification and task state managed in Airtable. It compares destination records before writing, uses batched native API upserts, rejects duplicate identities, and reports partial or ambiguous writes so a later run can reconcile safely. The scheduled Netlify function is disabled until Airtable is configured. I documented a Free-plan native automation that creates a linked review task after qualification, with rollup and checkbox guards. Live import, native automation execution and unattended operation are still pending credentials and deployment verification.
+
+## Completed-MVP interview narrative — use only after evidence ledger passes
+
+“I extended my existing Local Software Prospects system with Airtable as the outreach workspace. Research still persists through the authenticated Dashboarda MCP and Netlify Blobs. A scheduled TypeScript function reads that state and synchronizes research fields into Airtable using stable external IDs and batched upserts. It skips unchanged rows and leaves qualification, notes and activity state under user control. In Airtable, a native condition-triggered automation creates a linked outreach-review task when a prospect becomes Qualified, sets its due date and marks it handled. Linked-task counts guard against repeated serial qualification. I tested repeat sync, user-state preservation, duplicate detection and failure recovery, and captured the native automation and scheduled invocation. The useful engineering work was defining data ownership and reconciling uncertain writes; it sends no outreach automatically.”
+
+Use the first paragraph today. The second paragraph becomes truthful only when real import, repeat sync, native run history, user-state preservation and unattended invocation evidence exist. Neither version claims unlimited concurrent exactly-once task creation or that a lead became a customer.

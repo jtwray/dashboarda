@@ -139,3 +139,28 @@ test('status persistence failure surfaces rather than pretending success',async(
   const r=runtime();r.io.report=async()=>{throw Error('storage');};
   await assert.rejects(run(r.io),/sync_report_persistence_failure/);
 });
+
+test('observed production record maps without inventing source identity or website',()=>{
+  // Read-only MCP observation on 2026-10-14; this is mapping proof, not a live Airtable import.
+  const actual={business:'DSB Lawn Service LLC',location:'Danville, VA',workflow:'Property-detail intake form and recurring weekly lawn care.',hypothesis:'Hypothesis: connect approved estimates to recurring service scheduling and seasonal rebooking reminders.',phone:'434-218-2232',status:'new',_key:'business:DSB Lawn Service LLC|Danville, VA',firstSeenAt:'2026-10-13T00:19:11.851Z',lastSeenAt:'2026-10-13T00:19:11.851Z'};
+  const fields=mapProspect(actual);
+  assert.equal(fields['External ID'],'local-prospects:business:DSB Lawn Service LLC|Danville, VA');
+  assert.equal(fields.Website,'');assert.equal(fields['Qualification status'],undefined);
+});
+test('HTTP client and synchronizer reconcile after a committed PATCH loses its response',async()=>{
+  const records:AirtableRecord[]=[];let throwOnce=true;let clock=0;let patches=0;
+  const api=airtableClient({token:'secret-canary',base:'appExample',table:'tblExample',now:()=>clock,sleep:async ms=>{clock+=ms;},fetch:(async(_url,init)=>{
+    if(init?.method==='GET') return json({records});
+    patches++;
+    const body=JSON.parse(init?.body as string);
+    const f=body.records[0].fields;
+    const old=records.find(r=>r.fields['External ID']===f['External ID']);
+    if(old)Object.assign(old.fields,f);else records.push({id:'recActualTestDouble',fields:{...f,Notes:'Keep this', 'Qualification status':'Qualified'}});
+    if(throwOnce){throwOnce=false;throw Error('lost response');}
+    return json({records});
+  }) as typeof fetch});
+  const first=await syncProspects({items:[prospect()]},api);
+  assert.equal(first.status,'success');assert.equal(patches,2);assert.equal(records.length,1);
+  const again=await syncProspects({items:[prospect()]},api);
+  assert.equal(again.unchanged,1);assert.equal(patches,2);assert.equal(records[0].fields.Notes,'Keep this');
+});
