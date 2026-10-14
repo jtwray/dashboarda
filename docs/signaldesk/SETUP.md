@@ -1,6 +1,6 @@
 # Airtable setup and release runbook
 
-**Current state: code implemented; live base, native automation and scheduled execution not verified.** This runbook is human setup, not an assertion those operations occurred. Never send outreach from this workflow.
+**Current state:** base and linked schema created; five real prospects imported; repeat and isolated preservation checks passed via the connector. Native automation is a validated **off draft**; native execution and scheduled Netlify operation are not verified. Setup steps below remain the reproducible recipe. See EVIDENCE.md for completed operations. Never send outreach from this workflow.
 
 ## 1. Create or select a Free workspace base
 
@@ -129,3 +129,14 @@ Record actual dates, URLs, record IDs, counts and screenshots in EVIDENCE.md. Ne
 - Invalid source data fails before destination writes. No source deletes propagate. Stale/out-of-scope prospects remain available for human disposition.
 - `signaldesk-status/latest` is separate from dashboard state and records only sanitized counts/codes/timestamp. Function logs supply invocation history; status is only the latest attempt, not a durable audit log. Monitor Netlify failed scheduled invocations and Airtable failure notifications. Status writes can fail: that also fails the invocation.
 - Disable SIGNALDESK_ENABLED and redeploy to stop new bridge work; existing ChatGPT tasks and dashboards continue. Rolling back a deploy with this function removes its schedule. No Airtable data is deleted during rollback.
+
+## Existing setup — resume here
+
+- Base: https://airtable.com/appRoOSGbph3XGzNu
+- Review and enable native automation: https://airtable.com/appRoOSGbph3XGzNu/wflZOl0vNykBlcGGe
+- Prospects interface (editor URL, already published): https://airtable.com/appRoOSGbph3XGzNu/pagLr8jLCUoblDkRU/edit
+- Activities interface (editor URL, already published): https://airtable.com/appRoOSGbph3XGzNu/pagctCnZpxL77y5Cw/edit
+- Native connector creates automations off and explicitly requires the user to review and turn them on in Airtable. Do this once; do not manually create an outreach Activity as a substitute.
+- After enabling, use the clearly labelled QA prospect recHo67amPeWxIQox for first qualification, repeat updates and serial requalification tests. Leave real prospects' qualification decisions to the user.
+- Netlify base/table IDs are already set with Functions scope in production, bridge disabled. Add only AIRTABLE_TOKEN through the secrets UI, restricted to this base with data.records:read and data.records:write. Connected plugin OAuth does not supply credentials to Netlify. Do not enable the bridge or deploy over the current production lineage until release review.
+- New and Qualified, Follow-Up Due and Completed were created as native **interface filter tabs** across two grid pages. The base's default Grid views remain available; no additional base-grid views were created through the connector.

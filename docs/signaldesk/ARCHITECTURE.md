@@ -32,3 +32,7 @@ References:
 - https://support.airtable.com/articles/7735693959-managing-api-call-limits-in-airtable
 - https://airtable.com/developers/web/api/update-multiple-records
 - https://support.airtable.com/articles/7369519794-airtable-automation-trigger-when-record-matches-conditions
+
+## Access update — 21:38 UTC
+
+The user connected the Airtable plugin. Creator/owner access is now verified. Dedicated base appRoOSGbph3XGzNu and linked tables exist; five real prospects imported and repeated safely through the committed core engine using a connector adapter. The native create/update automation is a valid **off draft**, and the connector requires the user to review/enable it in Airtable. This supersedes the initial connector-absence blocker above. Netlify's independent runtime PAT is still missing, and there is no live unattended schedule proof. See EVIDENCE.md and live-evidence.json.

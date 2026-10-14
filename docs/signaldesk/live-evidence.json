@@ -1,0 +1,104 @@
+{
+  "baseId": "appRoOSGbph3XGzNu",
+  "prospectTableId": "tbloVnuQ2fVEcOlDx",
+  "activityTableId": "tblGhzbyIblzAQps0",
+  "fieldMap": {
+    "Business name": "fldL5AQtNTCgrawV9",
+    "External ID": "fldJtjkxU4DjZfch2",
+    "Website": "fldA8YFaMbgnrhA2z",
+    "Location": "fldNyoqsQVHHMICLR",
+    "Industry/workflow": "fldoPpFiu4nKtss1o",
+    "Automation opportunity": "fldBHmCe3cwezkH5W",
+    "Contact information": "fldbpGYo3H8hmzrrZ",
+    "First seen": "fldvgyzMW89g9AWqM",
+    "Last seen": "fldt2YU4Jsnqiga3n",
+    "Qualification status": "fldCvHXFwxHXXWod5",
+    "Notes": "fldQPHslLwRaYUwNp",
+    "Outreach created": "fldXqIh3tBHAbNyvo",
+    "Activities": "fld0v6boAvJqnihNI",
+    "Follow-up target": "fldRr3Nfto2RWhjme",
+    "Qualifying outreach count": "fldGyc6o7XsF1qfAb"
+  },
+  "activityFieldMap": {
+    "Activity": "fldUgHwBi6ypA8Axy",
+    "Activity type": "fldaz1VRHsmhVkx1Y",
+    "Description / next action": "fldXsAzhgVQtawQvr",
+    "Due date": "fldoCAaq6Dmp53DlG",
+    "Status": "fldDS5nOg9orwtPaC",
+    "Prospect": "fldwL2r1q88wN6rLb",
+    "Qualifying marker": "fldyaBNKKwiEV2Z82",
+    "Completion timestamp": "fldT9jKY7VPJ3SBYh",
+    "Prospect external ID": "fldv2Gni3gnptdJxL"
+  },
+  "automation": {
+    "automationId": "wflZOl0vNykBlcGGe",
+    "automationUrl": "https://airtable.com/appRoOSGbph3XGzNu/wflZOl0vNykBlcGGe",
+    "isValid": true,
+    "errors": []
+  },
+  "interface": {
+    "interfaceId": "pbdho1EkXnvdzS8fC"
+  },
+  "prospectPage": {
+    "pageId": "pagLr8jLCUoblDkRU",
+    "pageUrl": "https://airtable.com/appRoOSGbph3XGzNu/pagLr8jLCUoblDkRU/edit"
+  },
+  "activityPage": {
+    "pageId": "pagctCnZpxL77y5Cw",
+    "pageUrl": "https://airtable.com/appRoOSGbph3XGzNu/pagctCnZpxL77y5Cw/edit"
+  },
+  "import": {
+    "at": "2026-10-14T21:37:14.965Z",
+    "outcome": {
+      "status": "success",
+      "source": 5,
+      "unchanged": 0,
+      "confirmed": 5,
+      "uncertain": 0,
+      "pending": 0
+    },
+    "writes": [
+      [
+        "recUrFwGcCkorsYO6",
+        "recmCAQkvAddH9Asd",
+        "recdWXsLejGcfDxmH",
+        "recb5RqkdtLMxvUky",
+        "recBm2DB4qftm9bNl"
+      ]
+    ]
+  },
+  "repeat": {
+    "at": "2026-10-14T21:37:15.619Z",
+    "outcome": {
+      "status": "success",
+      "source": 5,
+      "unchanged": 5,
+      "confirmed": 0,
+      "uncertain": 0,
+      "pending": 0
+    },
+    "ids": [
+      "recBm2DB4qftm9bNl",
+      "recUrFwGcCkorsYO6",
+      "recb5RqkdtLMxvUky",
+      "recdWXsLejGcfDxmH",
+      "recmCAQkvAddH9Asd"
+    ]
+  },
+  "preservation": {
+    "at": "2026-10-14T21:38:27.257Z",
+    "result": {
+      "status": "success",
+      "source": 1,
+      "unchanged": 0,
+      "confirmed": 1,
+      "uncertain": 0,
+      "pending": 0
+    },
+    "qaId": "recHo67amPeWxIQox"
+  },
+  "qaRecordId": "recHo67amPeWxIQox",
+  "qualificationAutomationStatus": "undeployed",
+  "nativeRuns": [],
+  "transport": "Core syncProspects engine transpiled from committed TypeScript and executed against authenticated Airtable connector adapter; REST PAT client and Netlify schedule not live-verified"
+}
