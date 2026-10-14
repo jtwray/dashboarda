@@ -4,10 +4,20 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "netlify dev",
-    "build": "echo static dashboard"
+    "build": "npm run typecheck",
+    "test": "node --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@netlify/blobs": "latest",
     "@netlify/functions": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "typescript": "^5.9.3"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=24"
   }
 }
