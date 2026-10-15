@@ -156,3 +156,7 @@ The user's cache-cleared redeploy succeeded but used the old production branch, 
 | AIRTABLE_PROSPECTS_TABLE_ID | tbloVnuQ2fVEcOlDx |
 
 Use Production context and Functions scope. Leave the token secret. On **dashboarda-local-prospects only**, change the production branch to feature/airtable-signaldesk; verify base apps/local-prospects, build npm run build, publish public relative to base, functions netlify/functions. This deploys the isolated feature without merging main. The existing production UI and state handler were compared and match the feature branch exactly. Redeploy, confirm three functions exist, and keep the bridge disabled until runtime validation. Other Dashboarda sites must retain their existing settings.
+
+### Dependency declaration false positive
+
+This site's netlify.toml omits only **/node_modules/@types/node/crypto.d.ts from secret scanning because the stock type declaration coincidentally matches the dashboard PIN. The file was verified against the published npm package. Keep this exception narrow: do not disable secret scanning or omit DASHBOARD_READ_PIN globally. Re-evaluate the exception when changing Node type versions.
