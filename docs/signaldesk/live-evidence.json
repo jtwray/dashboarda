@@ -212,5 +212,27 @@
     ],
     "schedules": []
   },
-  "netlifyNonSecretConfigPersistenceVerified": false
+  "netlifyNonSecretConfigPersistenceVerified": false,
+  "productionDeploy": {
+    "id": "6ad02c0b86505dad51142e3d",
+    "state": "ready",
+    "branch": "feature/airtable-signaldesk",
+    "commit": "b32e065be7c7dce74e0d69d8ff5d7a198a51a461",
+    "publishedAt": "2026-10-15T01:27:54.771Z",
+    "functions": [
+      "state",
+      "signaldesk-status",
+      "signaldesk-sync"
+    ],
+    "schedule": "20 13 * * *"
+  },
+  "requiredEnvironmentKeysPresent": true,
+  "environmentValuesExternallyVerifiable": false,
+  "runtimeInvocationVerified": false,
+  "enableFlagUpdate": {
+    "requestedValue": "true",
+    "beforeUpdatedAt": "2026-10-15T01:25:47Z",
+    "afterUpdatedAt": "2026-10-15T01:31:36Z",
+    "requiresRedeploy": true
+  }
 }
