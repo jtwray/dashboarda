@@ -1,0 +1,238 @@
+{
+  "baseId": "appRoOSGbph3XGzNu",
+  "prospectTableId": "tbloVnuQ2fVEcOlDx",
+  "activityTableId": "tblGhzbyIblzAQps0",
+  "fieldMap": {
+    "Business name": "fldL5AQtNTCgrawV9",
+    "External ID": "fldJtjkxU4DjZfch2",
+    "Website": "fldA8YFaMbgnrhA2z",
+    "Location": "fldNyoqsQVHHMICLR",
+    "Industry/workflow": "fldoPpFiu4nKtss1o",
+    "Automation opportunity": "fldBHmCe3cwezkH5W",
+    "Contact information": "fldbpGYo3H8hmzrrZ",
+    "First seen": "fldvgyzMW89g9AWqM",
+    "Last seen": "fldt2YU4Jsnqiga3n",
+    "Qualification status": "fldCvHXFwxHXXWod5",
+    "Notes": "fldQPHslLwRaYUwNp",
+    "Outreach created": "fldXqIh3tBHAbNyvo",
+    "Activities": "fld0v6boAvJqnihNI",
+    "Follow-up target": "fldRr3Nfto2RWhjme",
+    "Qualifying outreach count": "fldGyc6o7XsF1qfAb"
+  },
+  "activityFieldMap": {
+    "Activity": "fldUgHwBi6ypA8Axy",
+    "Activity type": "fldaz1VRHsmhVkx1Y",
+    "Description / next action": "fldXsAzhgVQtawQvr",
+    "Due date": "fldoCAaq6Dmp53DlG",
+    "Status": "fldDS5nOg9orwtPaC",
+    "Prospect": "fldwL2r1q88wN6rLb",
+    "Qualifying marker": "fldyaBNKKwiEV2Z82",
+    "Completion timestamp": "fldT9jKY7VPJ3SBYh",
+    "Prospect external ID": "fldv2Gni3gnptdJxL"
+  },
+  "automation": {
+    "automationId": "wflZOl0vNykBlcGGe",
+    "automationUrl": "https://airtable.com/appRoOSGbph3XGzNu/wflZOl0vNykBlcGGe",
+    "isValid": true,
+    "errors": []
+  },
+  "interface": {
+    "interfaceId": "pbdho1EkXnvdzS8fC"
+  },
+  "prospectPage": {
+    "pageId": "pagLr8jLCUoblDkRU",
+    "pageUrl": "https://airtable.com/appRoOSGbph3XGzNu/pagLr8jLCUoblDkRU/edit"
+  },
+  "activityPage": {
+    "pageId": "pagctCnZpxL77y5Cw",
+    "pageUrl": "https://airtable.com/appRoOSGbph3XGzNu/pagctCnZpxL77y5Cw/edit"
+  },
+  "import": {
+    "at": "2026-10-14T21:37:14.965Z",
+    "outcome": {
+      "status": "success",
+      "source": 5,
+      "unchanged": 0,
+      "confirmed": 5,
+      "uncertain": 0,
+      "pending": 0
+    },
+    "writes": [
+      [
+        "recUrFwGcCkorsYO6",
+        "recmCAQkvAddH9Asd",
+        "recdWXsLejGcfDxmH",
+        "recb5RqkdtLMxvUky",
+        "recBm2DB4qftm9bNl"
+      ]
+    ]
+  },
+  "repeat": {
+    "at": "2026-10-14T21:37:15.619Z",
+    "outcome": {
+      "status": "success",
+      "source": 5,
+      "unchanged": 5,
+      "confirmed": 0,
+      "uncertain": 0,
+      "pending": 0
+    },
+    "ids": [
+      "recBm2DB4qftm9bNl",
+      "recUrFwGcCkorsYO6",
+      "recb5RqkdtLMxvUky",
+      "recdWXsLejGcfDxmH",
+      "recmCAQkvAddH9Asd"
+    ]
+  },
+  "preservation": {
+    "at": "2026-10-14T21:38:27.257Z",
+    "result": {
+      "status": "success",
+      "source": 1,
+      "unchanged": 0,
+      "confirmed": 1,
+      "uncertain": 0,
+      "pending": 0
+    },
+    "qaId": "recHo67amPeWxIQox"
+  },
+  "qaRecordId": "recHo67amPeWxIQox",
+  "qualificationAutomationStatus": "deployed",
+  "nativeRuns": [
+    {
+      "runId": "wfxrOpfFEjiBGAMN4",
+      "status": "success",
+      "startedTime": "2026-10-14T21:44:04.000Z",
+      "finishedTime": "2026-10-14T21:44:06.000Z",
+      "durationMs": 2000,
+      "deploymentId": "wfdEP5oaORJWVYZHy",
+      "failure": null
+    }
+  ],
+  "transport": "Core syncProspects engine transpiled from committed TypeScript and executed against authenticated Airtable connector adapter; REST PAT client and Netlify schedule not live-verified",
+  "nativeProspect": {
+    "id": "recHo67amPeWxIQox",
+    "createdTime": "2026-10-14T21:38:18.000Z",
+    "cellValuesByFieldId": {
+      "fld0v6boAvJqnihNI": [
+        {
+          "id": "rec8rbbYxbL4ZzECi",
+          "name": "Initial outreach review"
+        }
+      ],
+      "fldBHmCe3cwezkH5W": "Synthetic integration test only; do not contact.",
+      "fldCvHXFwxHXXWod5": {
+        "id": "selv61trlYOBN9v9u",
+        "name": "Qualified",
+        "color": "grayLight2"
+      },
+      "fldGyc6o7XsF1qfAb": 1,
+      "fldJtjkxU4DjZfch2": "local-prospects:qa:signaldesk-preservation-20261014",
+      "fldL5AQtNTCgrawV9": "[QA] SignalDesk preservation test \u2014 not a prospect",
+      "fldNyoqsQVHHMICLR": "Synthetic QA fixture",
+      "fldQPHslLwRaYUwNp": "QA preservation marker \u2014 user-owned notes must survive research updates.",
+      "fldRr3Nfto2RWhjme": "2026-10-16T21:45:01.000Z",
+      "fldXqIh3tBHAbNyvo": true,
+      "fldoPpFiu4nKtss1o": "QA reference workflow v4 \u2014 completed task preservation",
+      "fldt2YU4Jsnqiga3n": "2026-10-14T21:44:46.801Z",
+      "fldvgyzMW89g9AWqM": "2026-10-14T21:38:12.656Z"
+    }
+  },
+  "nativeTask": {
+    "id": "rec8rbbYxbL4ZzECi",
+    "createdTime": "2026-10-14T21:44:05.000Z",
+    "cellValuesByFieldId": {
+      "fldDS5nOg9orwtPaC": {
+        "id": "selmlTDaZo0HAcR5D",
+        "name": "Completed",
+        "color": "grayLight2"
+      },
+      "fldT9jKY7VPJ3SBYh": "2026-10-14T21:44:47.000Z",
+      "fldUgHwBi6ypA8Axy": "Initial outreach review",
+      "fldXsAzhgVQtawQvr": "Review the research and contact details. Draft a personal introduction for human approval. Do not send automatically.",
+      "fldaz1VRHsmhVkx1Y": {
+        "id": "selRwAaFH9pVyh8jk",
+        "name": "Initial outreach",
+        "color": "grayLight2"
+      },
+      "fldoCAaq6Dmp53DlG": "2026-10-17T21:44:04.000Z",
+      "fldv2Gni3gnptdJxL": {
+        "linkedRecordIds": [
+          "recHo67amPeWxIQox"
+        ],
+        "valuesByLinkedRecordId": {
+          "recHo67amPeWxIQox": [
+            "local-prospects:qa:signaldesk-preservation-20261014"
+          ]
+        }
+      },
+      "fldwL2r1q88wN6rLb": [
+        {
+          "id": "recHo67amPeWxIQox",
+          "name": "[QA] SignalDesk preservation test \u2014 not a prospect"
+        }
+      ],
+      "fldyaBNKKwiEV2Z82": 1
+    }
+  },
+  "qualificationStartedAt": "2026-10-14T21:44:03.926Z",
+  "postNativeSync": {
+    "at": "2026-10-14T21:44:33.207Z",
+    "outcome": {
+      "status": "success",
+      "source": 1,
+      "unchanged": 0,
+      "confirmed": 1,
+      "uncertain": 0,
+      "pending": 0
+    }
+  },
+  "completedTaskSync": {
+    "at": "2026-10-14T21:44:51.803Z",
+    "outcome": {
+      "status": "success",
+      "source": 1,
+      "unchanged": 0,
+      "confirmed": 1,
+      "uncertain": 0,
+      "pending": 0
+    }
+  },
+  "serialTransitionsCompletedAt": "2026-10-14T21:45:00.813Z",
+  "nativeVerification": "One successful native run; exactly one linked initial task after research refreshes, serial requalification, completion, user-edited due date and another serial requalification. The task's status and due date survived later sync. No manual Activity creation.",
+  "runtimeCredentialKeyPresent": true,
+  "runtimeCredentialVerified": false,
+  "userRedeploy": {
+    "id": "6acffc6d1473b237a87a73bc",
+    "branch": "fix/scheduled-write-outcomes",
+    "commit": "b722b4f1d714c1925a36f2a90ad7b49bba07d045",
+    "functions": [
+      "state"
+    ],
+    "schedules": []
+  },
+  "netlifyNonSecretConfigPersistenceVerified": false,
+  "productionDeploy": {
+    "id": "6ad02c0b86505dad51142e3d",
+    "state": "ready",
+    "branch": "feature/airtable-signaldesk",
+    "commit": "b32e065be7c7dce74e0d69d8ff5d7a198a51a461",
+    "publishedAt": "2026-10-15T01:27:54.771Z",
+    "functions": [
+      "state",
+      "signaldesk-status",
+      "signaldesk-sync"
+    ],
+    "schedule": "20 13 * * *"
+  },
+  "requiredEnvironmentKeysPresent": true,
+  "environmentValuesExternallyVerifiable": false,
+  "runtimeInvocationVerified": false,
+  "enableFlagUpdate": {
+    "requestedValue": "true",
+    "beforeUpdatedAt": "2026-10-15T01:25:47Z",
+    "afterUpdatedAt": "2026-10-15T01:31:36Z",
+    "requiresRedeploy": true
+  }
+}

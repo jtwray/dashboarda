@@ -1,5 +1,11 @@
 [build]
-  publish = "."
+  command = "npm run build"
+  publish = "public"
+
+[build.environment]
+  # Stock @types/node documentation coincidentally matches DASHBOARD_READ_PIN.
+  # Exclude only this non-published declaration file, at either workspace depth.
+  SECRETS_SCAN_OMIT_PATHS = "**/node_modules/@types/node/crypto.d.ts"
 
 [functions]
   directory = "netlify/functions"

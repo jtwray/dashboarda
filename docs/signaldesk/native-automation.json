@@ -1,0 +1,147 @@
+{
+  "id": "wflZOl0vNykBlcGGe",
+  "name": "Qualified prospect \u2192 initial outreach review",
+  "description": "When a prospect first becomes Qualified and has no initial outreach activity, create a linked human-review task due two days after qualification, then mark it handled. Research sync never edits qualification or task state. No messages are sent.",
+  "deploymentStatus": "deployed",
+  "deploymentError": null,
+  "trigger": {
+    "type": "recordMatchesConditions",
+    "inputs": {
+      "tableId": "tbloVnuQ2fVEcOlDx",
+      "filtersObj": {
+        "obj": {
+          "operator": "and",
+          "operands": {
+            "tuple": [
+              {
+                "obj": {
+                  "operator": "=",
+                  "operands": {
+                    "tuple": [
+                      "fldCvHXFwxHXXWod5",
+                      "selv61trlYOBN9v9u"
+                    ]
+                  }
+                }
+              },
+              {
+                "obj": {
+                  "operator": "=",
+                  "operands": {
+                    "tuple": [
+                      "fldGyc6o7XsF1qfAb",
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "obj": {
+                  "operator": "=",
+                  "operands": {
+                    "tuple": [
+                      "fldXqIh3tBHAbNyvo",
+                      false
+                    ]
+                  }
+                }
+              },
+              {
+                "obj": {
+                  "operator": "isNotEmpty",
+                  "operands": {
+                    "tuple": [
+                      "fldJtjkxU4DjZfch2"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "nodes": [
+    {
+      "key": "wacA8AFUzGlFcsrIK",
+      "type": "createRecord",
+      "description": "Create linked initial outreach review, due two days after qualification",
+      "inputs": {
+        "createRecordMethod": "customFields",
+        "tableId": "tblGhzbyIblzAQps0",
+        "fields": {
+          "obj": {
+            "fldUgHwBi6ypA8Axy": {
+              "template": [
+                "Initial outreach review"
+              ]
+            },
+            "fldwL2r1q88wN6rLb": {
+              "template": [
+                {
+                  "$ref": "trigger",
+                  "path": [
+                    "id"
+                  ]
+                }
+              ]
+            },
+            "fldaz1VRHsmhVkx1Y": {
+              "obj": {
+                "id": "selRwAaFH9pVyh8jk"
+              }
+            },
+            "fldXsAzhgVQtawQvr": {
+              "template": [
+                "Review the research and contact details. Draft a personal introduction for human approval. Do not send automatically."
+              ]
+            },
+            "fldoCAaq6Dmp53DlG": {
+              "template": [
+                {
+                  "$ref": "trigger",
+                  "path": [
+                    "cellValuesByFieldId",
+                    "fldRr3Nfto2RWhjme"
+                  ]
+                }
+              ]
+            },
+            "fldDS5nOg9orwtPaC": {
+              "obj": {
+                "id": "selvsdN34vZ993YwH"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "key": "wacIy5juAQBQzRAES",
+      "type": "updateRecord",
+      "description": "Mark prospect handled after the linked task is created",
+      "inputs": {
+        "updateRecordMethod": "customFields",
+        "tableId": "tbloVnuQ2fVEcOlDx",
+        "rowId": {
+          "template": [
+            {
+              "$ref": "trigger",
+              "path": [
+                "id"
+              ]
+            }
+          ]
+        },
+        "fields": {
+          "obj": {
+            "fldXqIh3tBHAbNyvo": true
+          }
+        }
+      }
+    }
+  ],
+  "deployedVersion": null,
+  "configurationStatus": "valid"
+}

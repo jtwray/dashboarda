@@ -1,1 +1,8 @@
-node_modules/\n.netlify/\n.DS_Store\n
+node_modules/
+.netlify/
+.DS_Store
+.env
+.env.*
+!.env.example
+dist/
+coverage/
