@@ -18,7 +18,7 @@ Create a **separate Netlify site** from the Dashboarda monorepo with:
 
 - Base directory: apps/job-search
 - Build command: npm run build
-- Publish directory: .
+- Publish directory: public
 - Functions directory: netlify/functions
 - Node runtime: 22+
 
