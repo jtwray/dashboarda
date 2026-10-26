@@ -15,7 +15,7 @@ const safeUrl = (v) => {
   } catch { return ""; }
 };
 
-const dateOnly = (v) => typeof v === "string" && /^\\d{4}-\\d{2}-\\d{2}$/.test(v) ? v : "";
+const dateOnly = (v) => typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : "";
 
 export function normalizeApplication(record) {
   const f = record?.fields ?? {};
