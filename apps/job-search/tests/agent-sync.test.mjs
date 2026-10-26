@@ -70,14 +70,23 @@ test("conservative confirmed and uncertain transitions", () => {
   const same = safeFields(sourceJob({
     status:STATUS.confirmed, submissionDate:"2026-10-26", confirmationEvidence:"Other observation"
   }),submitted,"2026-10-26");
-  assert.equal(same["Confirmation Evidence"],"Observed receipt");
-  assert.equal(same["Submission Date"],"2026-10-25");
+  assert.deepEqual(same, {"Application Key":"original","Current Status":STATUS.confirmed});
   const uncertain={fields:{"Application Key":"original","Current Status":STATUS.uncertain}};
   assert.throws(() => safeFields(sourceJob({status:STATUS.confirmed,
     submissionDate:"2026-10-26",confirmationEvidence:"thanks"}),uncertain,"2026-10-26"),/reconciled/);
   assert.throws(() => safeFields(sourceJob({status:STATUS.confirmed,
     submissionDate:"2026-10-26",confirmationEvidence:"thanks",
     reconciliation:{reviewedByApplicant:true}}),uncertain,"2026-10-26"),/reconciliation evidence/);
+});
+
+test("cannot clear blockers without resolution evidence", () => {
+  const blocked = {fields: {"Application Key":"legacy1","Current Status":STATUS.blockedHuman}};
+  assert.throws(() => safeFields(sourceJob(),blocked,"2026-10-26"),/verified resolution/);
+  assert.throws(() => safeFields(sourceJob({reconciliation:{evidence:"Browser fixed"}}),blocked,"2026-10-26"),/verified resolution/);
+  const resolved = safeFields(sourceJob({reconciliation:{
+    reviewedByApplicant:true, evidence:"Applicant verified required facts and approved continuation"
+  }}),blocked,"2026-10-26");
+  assert.equal(resolved["Current Status"],STATUS.prepared);
 });
 
 test("never write a confirmed status without evidence or actual date", () => {
