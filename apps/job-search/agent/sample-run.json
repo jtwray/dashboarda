@@ -1,0 +1,24 @@
+{
+  "runId": "SAMPLE_DRY_RUN_NOT_REAL",
+  "localDate": "2026-10-26",
+  "applications": [
+    {
+      "employer": "Example Systems (fictional)",
+      "role": "Frontend Engineer",
+      "postingUrl": "https://example.invalid/jobs/sample-123",
+      "requisition": "sample-123",
+      "status": "PREPARED",
+      "resumeDocx": "fictional-document-reference",
+      "trackedDate": "2026-10-26",
+      "source": "Fictional dry-run fixture, not an application"
+    }
+  ],
+  "run": {
+    "label": "Fictional dry-run illustration",
+    "screened": 1,
+    "prepared": 1,
+    "attempted": 0,
+    "confirmed": 0,
+    "notes": "Test input only. Never use --apply."
+  }
+}
