@@ -65,9 +65,9 @@ Do not put real job-run data with personally sensitive screening answers or bear
 ## Acceptance gates
 
 - [x] Writer and guardrail tests authored on JS-03 branch
-- [ ] GitHub CI passes with replay/uncertain/partial failure coverage
-- [ ] Real Airtable *isolated QA-table* test: repeated upsert by ID does not create duplicates, readback confirms one row
-- [ ] Read-only dry-run matches 47 historical rows and counts without modifying canonical records
+- [x] GitHub CI passes with replay/uncertain/partial failure coverage — workflow run 40407266078
+- [x] Real Airtable *isolated QA-table* test: `JS-03 Integration QA` table `tbl97XW5cD5UpuSCr`; two serial upserts by Application Key returned the same record ID `recWO4j80JKhfmGJQ` and readback found one QA row
+- [x] Connector read-only audit confirms 47 Application rows (22 confirmed / 24 blocked / 1 uncertain), with zero duplicate keys, canonical posting URLs or employer+requisition pairs; all 22 confirmed have evidence and submission dates. CLI against a real PAT remains a later runtime gate.
 - [ ] No hardcoded credentials or accidental public write endpoint; independent security review
 - [ ] Trial run explicitly verifies Airtable connector access, new record write, event, run, dashboard sync, and rollback steps
 - [ ] Owner review before changing scheduled prompt or making Airtable authoritative
@@ -75,3 +75,9 @@ Do not put real job-run data with personally sensitive screening answers or bear
 ## JS-04 cutover candidate
 
 Shorten the scheduled automation prompt, replacing old chronological checkpoints with links to current persistent records. Correct driving/commute facts. Preserve verified applicant instructions/consents in a separate authoritative profile. Change only after read/write and dedup gate is proven. Keep eight-per-day checking and ten-per-*day* cap unless the applicant explicitly changes it. Restrict the new dashboard to read-only.
+
+## QA receipts, October 26
+
+- GitHub Actions: https://github.com/jtwray/dashboarda/actions/runs/40407266078 — conclusion success.
+- Airtable QA: https://airtable.com/appsqe7i9ZeXspE0t/tbl97XW5cD5UpuSCr — synthetic entry only. This is independent of the 47 actual applications.
+- Scheduled task is still enabled and **unchanged**. No live agent write cutover; no ATS submissions made for JS-03.
