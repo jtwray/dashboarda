@@ -142,11 +142,8 @@ export function safeFields(candidate, existing = null, localDate) {
     fields["Confirmation Evidence"] = previous["Confirmation Evidence"];
     fields["Submission Date"] = previous["Submission Date"];
   }
-  if (!existing || !beforeStatus) return fields;
-  // Do not blank any previously recorded content in partial updates.
-  for (const [key, value] of Object.entries(previous)) {
-    if (!(key in fields) && typeof value === "string" && value) fields[key] = value;
-  }
+  // PATCH only includes allowlisted fields; omitted fields in Airtable are preserved.
+  // Never echo source fields unknown to this schema, including private answers.
   return fields;
 }
 
@@ -170,16 +167,17 @@ export function eventSpec(job, applicationKey, runId, dateValue) {
     runId, applicationKey, kind, status,
     job.confirmationEvidence || "", job.blocker || "", job.nextAction || ""
   ])).slice(0, 36);
-  return {
+  const event = {
     "Event ID": "js03_" + digest,
     "Application Key": applicationKey,
     "Event Kind": kind,
     "Occurred Date": dateValue,
     Status: status,
-    "Evidence / Notes": str(job.eventEvidence || job.confirmationEvidence ||
-      job.blocker || job.nextAction || "", 2000),
     Source: "JS-03 verified agent write"
   };
+  const description = str(job.eventEvidence || job.confirmationEvidence || job.blocker || job.nextAction || "", 2000);
+  if (description) event["Evidence / Notes"] = description;
+  return event;
 }
 
 export function runFields(run, localDate) {
@@ -197,6 +195,6 @@ export function runFields(run, localDate) {
       f[out] = value;
     }
   }
-  f.Notes = str(run.notes, 1600);
+  if (str(run.notes, 1600)) f.Notes = str(run.notes, 1600);
   return f;
 }
