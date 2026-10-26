@@ -95,6 +95,22 @@ export function safeFields(candidate, existing = null, localDate) {
 
   if (beforeStatus === STATUS.confirmed && candidate.status !== STATUS.confirmed)
     throw new Error("Refusing to demote a confirmed submission");
+  if (beforeStatus === STATUS.confirmed) {
+    // Submitted records are immutable through this automated writer; corrections
+    // require separately reviewed reconciliation, not a normal replay.
+    return {
+      "Application Key": str(previous["Application Key"], 300),
+      "Current Status": STATUS.confirmed
+    };
+  }
+  if (typeof beforeStatus === "string" && beforeStatus.startsWith("BLOCKED_")
+      && candidate.status === STATUS.prepared) {
+    const resolved = str(candidate.reconciliation?.evidence, 1600);
+    if (!resolved || (beforeStatus !== STATUS.blockedTechnical &&
+        candidate.reconciliation?.reviewedByApplicant !== true)) {
+      throw new Error("Blocked application cannot become prepared without verified resolution");
+    }
+  }
   if (beforeStatus === STATUS.uncertain && candidate.status !== STATUS.uncertain &&
       candidate.reconciliation?.reviewedByApplicant !== true)
     throw new Error("Uncertain submission must be reconciled by applicant");
