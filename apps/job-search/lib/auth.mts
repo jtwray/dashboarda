@@ -85,21 +85,22 @@ function attemptStore() {
     : getDeployStore("job-search-auth-attempts");
 }
 
-function attemptKey(req: Request) {
-  const ip = req.headers.get("x-nf-client-connection-ip") ?? "unknown";
+function attemptKey(ip: string) {
+  // Netlify's trusted request context is preferred over client-supplied headers.
+  const stableIp = ip || "unknown";
   return createHmac("sha256", env("JOB_DASHBOARD_SESSION_SECRET"))
-    .update(ip).digest("hex");
+    .update(stableIp).digest("hex");
 }
 
 type Attempts = { count: number; windowStart: number };
-export async function loginAllowed(req: Request): Promise<boolean> {
-  const record = await attemptStore().get(attemptKey(req), { type: "json" }) as Attempts | null;
+export async function loginAllowed(ip: string): Promise<boolean> {
+  const record = await attemptStore().get(attemptKey(ip), { type: "json" }) as Attempts | null;
   if (!record || Date.now() - record.windowStart >= WINDOW_MS) return true;
   return record.count < MAX_FAILURES;
 }
 
-export async function recordFailure(req: Request) {
-  const store = attemptStore(), key = attemptKey(req);
+export async function recordFailure(ip: string) {
+  const store = attemptStore(), key = attemptKey(ip);
   const previous = await store.get(key, { type: "json" }) as Attempts | null;
   const now = Date.now();
   const recent = previous && now - previous.windowStart < WINDOW_MS;
