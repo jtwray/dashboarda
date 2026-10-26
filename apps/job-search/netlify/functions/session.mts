@@ -1,11 +1,11 @@
-import type { Config } from "@netlify/functions";
+import type { Config, Context } from "@netlify/functions";
 import {
   configured, json, hasSession, sameOrigin, issueSession,
   sessionCookie, clearSessionCookie, verifyPassphrase,
   loginAllowed, recordFailure
 } from "../../lib/auth.mts";
 
-export default async function handler(req: Request) {
+export default async function handler(req: Request, context: Context) {
   if (!configured()) return json({ error: "Dashboard credentials are not configured." }, 503);
   if (req.method === "GET") {
     return hasSession(req) ? json({ authenticated: true }) :
@@ -22,7 +22,7 @@ export default async function handler(req: Request) {
   if (!(req.headers.get("content-type") ?? "").startsWith("application/json"))
     return json({ error: "JSON required" }, 415);
   try {
-    if (!(await loginAllowed(req))) {
+    if (!(await loginAllowed(context.ip ?? ""))) {
       return json({ error: "Too many attempts. Try again in 15 minutes." }, 429, {
         "Retry-After": "900"
       });
@@ -30,7 +30,7 @@ export default async function handler(req: Request) {
     const body = await req.json();
     const passphrase = typeof body?.passphrase === "string" ? body.passphrase : "";
     if (passphrase.length > 1024 || !verifyPassphrase(passphrase)) {
-      await recordFailure(req);
+      await recordFailure(context.ip ?? "");
       return json({ error: "Incorrect passphrase." }, 401);
     }
     return json({ authenticated: true }, 200, {
@@ -42,4 +42,8 @@ export default async function handler(req: Request) {
   }
 }
 
-export const config: Config = { path: "/api/session" };
+export const config: Config = {
+  path: "/api/session",
+  // Provider-level IP throttling supplements the fail-closed Netlify Blob limit.
+  rateLimit: { action: "rate_limit", aggregateBy: "ip", windowSize: 60, windowLimit: 20 }
+};
