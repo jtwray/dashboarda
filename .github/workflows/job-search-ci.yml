@@ -1,0 +1,23 @@
+name: Job Search Cockpit checks
+on:
+  pull_request:
+    paths:
+      - 'apps/job-search/**'
+      - '.github/workflows/job-search-ci.yml'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check frontend JavaScript syntax
+        run: node --check apps/job-search/public/main.js
+      - name: Test safe projection and status accounting
+        run: node --test apps/job-search/tests/*.test.mjs
+      - name: Bundle-check both Netlify Functions (without secrets)
+        run: |
+          npx --yes esbuild@0.25.12 apps/job-search/netlify/functions/session.mts --bundle --packages=external --platform=node --format=esm --outfile=/tmp/job-session.mjs
+          npx --yes esbuild@0.25.12 apps/job-search/netlify/functions/pipeline.mts --bundle --packages=external --platform=node --format=esm --outfile=/tmp/job-pipeline.mjs
